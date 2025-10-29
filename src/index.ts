@@ -8,7 +8,6 @@ export interface TerseTheme {
     primary?: string,
     secondary?: string
   }
-
   breakpoints?: {
     sm?: string,
     md?: string
@@ -71,7 +70,6 @@ class TerseCSS {
               const token: Token = {
                 command: commands[0],
                 value: values[0],
-                rawClass: sh,
               };
 
               tokens.push(token);
@@ -83,8 +81,7 @@ class TerseCSS {
               tokens.push({
                 command: commands[0],
                 value: valueOpt,
-                option: values[1],
-                rawClass: sh,
+                option: values[1]
               });
             }
           } else if (commands.length === 2) {
@@ -97,7 +94,6 @@ class TerseCSS {
                 const token: Token = {
                   command: commands[1],
                   value: values[0],
-                  rawClass: sh,
                   mediaType: cOption,
                 };
 
@@ -113,16 +109,14 @@ class TerseCSS {
                 tokens.push({
                   command: commands[1],
                   value: values[0],
-                  effect: commands[0],
-                  rawClass: sh,
+                  effect: commands[0]
                 });
               } else {
                 //multiple value for effect option
                 tokens.push({
                   command: commands[1],
                   value: values[0],
-                  effect: commands[0],
-                  rawClass: sh,
+                  effect: commands[0]
               });
               }
             }
@@ -138,7 +132,6 @@ class TerseCSS {
                 value: values[0],
                 effect,
                 mediaType,
-                rawClass: sh,
               });
             }
           }
@@ -162,7 +155,6 @@ class TerseCSS {
 
         const astToken: ASTType = {
           res,
-          rawClass: tk.rawClass,
           env: "global",
         };
 
@@ -174,7 +166,6 @@ class TerseCSS {
 
         const astToken: ASTType = {
           res,
-          rawClass: tk.rawClass,
           effect: tk.effect,
           env: "effect",
         };
@@ -189,7 +180,6 @@ class TerseCSS {
 
         const astToken: ASTType = {
           res,
-          rawClass: tk.rawClass,
           media,
           mediaType: tk.mediaType,
           effect: tk.effect,
@@ -205,7 +195,6 @@ class TerseCSS {
 
         const astToken: ASTType = {
           res,
-          rawClass: tk.rawClass,
           media,
           mediaType: tk.mediaType,
           env: "media",
@@ -225,7 +214,8 @@ class TerseCSS {
 
     const tokens = this.#lexer(node?.classes);
     const ast: ASTType[] = this.#ast(tokens);
-    
+
+    //generating clasname for each nodes
     const className = tUtils.classname(node);
 
     ast.flatMap((tk) => {
@@ -285,9 +275,20 @@ class TerseCSS {
   //entry point
   /**@method init TerseCSS Entry Point. @param theme provide a custom Tersetheme or use the default  @description make sure to call this function. */
   init(theme?: TerseTheme) {
+    //nodelist
+    this.nodelist = this.#getNodeList();
+
     //theme
     this.theme = tUtils.th(theme as TerseTheme);
 
+    this.nodelist.flatMap((node) => {
+      const classes = this.#runtime(node);
+      node.element.classList.add(classes);
+    });
+  }
+
+  /**@method start TerseCSS Entry Point.  @description call this function to init TerseCSS without worrying about theme. */
+  start() {
     //nodelist
     this.nodelist = this.#getNodeList();
 
