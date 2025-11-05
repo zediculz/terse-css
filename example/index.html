@@ -9,17 +9,18 @@
 </head>
 
 <body>
-  <div id="app" class="w-100% h-100dvh bg-blue center flexd-column md:bg-green sm:bg-red">
-    <div class="w-300px h-100px flex bg-lime md:bg-purple color-violet sm:color-red md:color-lime" id="d">
-      <p class="dark:color-green space-small">TerseCSS Works</p>
-      <b class="color-purple hover:color-red cur-pointer sm:color-red sm:hover:bg-blue">BOLD BOLDYY</b>
+  <div id="app" class="@vstack:100%:100dvh">
+    <div class="@sq:200px bg:var(primary) sm:bg-var(bo) center cur-pointer">
+      <h1 class="color-var(bo) hover:color-red">1</h1>
+      <h1 class="hover:color-var(bo)">a</h1>
+      <h1 class="color-purple sm:color-var(primary)">bvwvb</h1>
     </div>
-
-    <div class="w-60% h-150px bg-lime center space-10pt bdr-10px cur-pointer bd-12px:solid:red bs-12px:2px:1px:red" id="d">
-      <p class="dark:color-green">TerseCSS Works</p>
+    <div class="@rect:356px:100px center bg-green sm:hover:bg-var(primary) cur-pointer">
+      <h2 class="font-40pt color-indigo hover:color-pink">2</h2>
     </div>
-    <h1 class="color-blue:100 hover:color-purple:1 cur-pointer">Oh Sorry!</h1>
-    <button class="primarybtn">Press ME</button>
+    <div class="@sq:30% bg-blue center color-var(primary)">
+      <h3 class="font-56pt color-indigo cur-pointer">3</h3>
+    </div>
   </div>
   <script type="module" src="/src/main.ts"></script>
 </body>

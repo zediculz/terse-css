@@ -1,6 +1,6 @@
 ///<reference lib="dom" />
 import { defaultTheme, tUtils } from "./utils";
-import type { Token, Node, ASTType } from "./utils";
+import type { Token, Node, ASTType, TerseVar } from "./utils";
 
 export interface TerseTheme {
   title?: string,
@@ -13,7 +13,10 @@ export interface TerseTheme {
     md?: string
     lg?: string
   },
-  root?: string
+  root?: string,
+  vars?: TerseVar[],
+  fontFamily?: string,
+  transition?: string
 }
 
 /**@class TerseCSS */
@@ -25,18 +28,23 @@ class TerseCSS {
   private sheet: CSSStyleSheet | null;
 
   constructor() {
-    this.theme = defaultTheme;
-    this.style = [this.theme.root as string, `*{margin:0;padding:0;}`];
+    this.theme = tUtils.th(defaultTheme);
     this.nodelist = [];
     this.classlist = [];
+    this.style = [this.theme.root as string, this.#ASTERICKS()];
     this.sheet = this.#DOM();
   }
 
   #DOM() {
     const shStyleElement = document.createElement("style");
     document.head.appendChild(shStyleElement);
-    const shSheet = shStyleElement.sheet;
-    return shSheet;
+    return shStyleElement.sheet;
+  }
+
+  #ASTERICKS() {
+    const fontFamily = this.theme.fontFamily
+    const transition = this.theme.transition
+    return `*{margin:0;padding:0;font-family:${fontFamily};transition:${transition};}`
   }
 
   /**@method #lexer terseCSS Lexer */
@@ -47,16 +55,39 @@ class TerseCSS {
       return tokens;
     } else {
       //shorthand are not empty
-
       const shStrArray = sh.split(" ");
       shStrArray.flatMap((shArray) => {
         const shSplit = shArray.split("-");
 
         if (shSplit.length === 1) {
           //One Line codes
-          this.#lexer(tUtils.one(shArray)).flatMap((obj) => tokens.push(obj));
+          //one line commands
+          const shArraySplit = shArray.split(":")
+
+          const _vars = shArraySplit[1] !== undefined ? shArraySplit[1].split("var")[1] : shArraySplit[1]
+          const varCheck = _vars !== undefined ? _vars.split("(")[1]?.split(")")[0] : _vars
+          const command = tUtils.com(shArraySplit[0])
+
+          if (shArraySplit.length === 1) {
+            this.#lexer(tUtils.one(shArray)).flatMap((obj) => tokens.push(obj));
+          } else {
+
+            if (varCheck !== undefined && command) {
+              const varValue = this.theme.vars?.filter(v => v.name === varCheck)[0]?.value
+              const token: Token = {
+                command,
+                value: varValue as string,
+              };
+
+              tokens.push(token);
+            } else {
+              this.#lexer(tUtils.oneOpt(shArraySplit)).flatMap((obj) => tokens.push(obj));
+            }
+
+          }
         } else {
-          //All others
+          //commands and value shorthands
+          //All other shorthand commands
           const commandArray = shSplit[0];
           const valueArray = shSplit[1];
 
@@ -66,23 +97,24 @@ class TerseCSS {
           if (commands.length === 1) {
             //one command
             if (values.length === 1) {
-              //one command one value
-              const token: Token = {
+              //one command and one value
+              const token:Token = {
                 command: commands[0],
-                value: values[0],
+                value: this.#varRes(values[0]) as string,
               };
 
               tokens.push(token);
             } else if (values.length === 2) {
               //one command, two values
-              const valueOpt = isNaN(parseInt(values[1]))
-                ? values.join("-")
-                : values[0];
-              tokens.push({
+              const valueOpt = isNaN(parseInt(values[1])) ? values.join("-") : values[0];
+
+              const token = {
                 command: commands[0],
-                value: valueOpt,
+                value: this.#varRes(valueOpt) as string,
                 option: values[1]
-              });
+              }
+
+              tokens.push(token);
             }
           } else if (commands.length === 2) {
             const cOption = commands[0];
@@ -93,7 +125,7 @@ class TerseCSS {
                 //two command-Responsive option and one value
                 const token: Token = {
                   command: commands[1],
-                  value: values[0],
+                  value: this.#varRes(values[0]) as string,
                   mediaType: cOption,
                 };
 
@@ -108,16 +140,18 @@ class TerseCSS {
                 //one value for effect
                 tokens.push({
                   command: commands[1],
-                  value: values[0],
+                  value: this.#varRes(values[0]) as string,
                   effect: commands[0]
                 });
               } else {
                 //multiple value for effect option
                 tokens.push({
                   command: commands[1],
-                  value: values[0],
+                  value: this.#varRes(values[0]) as string,
                   effect: commands[0]
-              });
+                });
+
+                //console.log(commands[1], values[0], commands[0])
               }
             }
           } else if (commands.length === 3) {
@@ -129,7 +163,7 @@ class TerseCSS {
             if (values.length === 1) {
               tokens.push({
                 command,
-                value: values[0],
+                value: this.#varRes(values[0]) as string,
                 effect,
                 mediaType,
               });
@@ -140,6 +174,17 @@ class TerseCSS {
 
       //console.log(tokens)
       return tokens;
+    }
+  }
+
+  #varRes(value: string) {
+    const varSplit = value.split("var")
+    if (varSplit.length === 1) {
+      return value
+    } else if (varSplit[1] !== undefined) {
+      const vars = varSplit[1].split("(")[1].split(")")[0]
+      const varValue = this.theme.vars?.filter(v => v.name === vars)[0]
+      return varValue?.value
     }
   }
 
@@ -190,7 +235,7 @@ class TerseCSS {
       } else if (tk.mediaType !== undefined && tk.effect === undefined) {
         //"all responsive"
         const command = tUtils.com(tk.command);
-        const media = tUtils.media(tk.mediaType, defaultTheme);
+        const media = tUtils.media(tk.mediaType, this.theme);
         const res = `${command}:${tk.value};`;
 
         const astToken: ASTType = {
@@ -208,15 +253,18 @@ class TerseCSS {
   }
 
   /**@method #runtime terseCSS runtime */
-  #runtime(node: Node) {
+  #runtime(elements: Node) {
     let rules = "";
     let mediaRules = "";
 
-    const tokens = this.#lexer(node?.classes);
+    const tokens = this.#lexer(elements?.classes);
     const ast: ASTType[] = this.#ast(tokens);
 
+    //console.log(tokens)
+    //console.log(ast)
+
     //generating clasname for each nodes
-    const className = tUtils.classname(node);
+    const className = tUtils.classname(elements);
 
     ast.flatMap((tk) => {
       if (tk.env === "global") {
@@ -279,11 +327,11 @@ class TerseCSS {
     this.nodelist = this.#getNodeList();
 
     //theme
-    this.theme = tUtils.th(theme as TerseTheme);
+    this.theme = theme as TerseTheme
 
-    this.nodelist.flatMap((node) => {
-      const classes = this.#runtime(node);
-      node.element.classList.add(classes);
+    this.nodelist.flatMap((el) => {
+      const classes = this.#runtime(el);
+      el.element.classList.add(classes);
     });
   }
 
@@ -292,14 +340,14 @@ class TerseCSS {
     //nodelist
     this.nodelist = this.#getNodeList();
 
-    this.nodelist.flatMap((node) => {
-      const classes = this.#runtime(node);
-      node.element.classList.add(classes);
+    this.nodelist.flatMap((el) => {
+      const classes = this.#runtime(el);
+      el.element.classList.add(classes);
     });
   }
 }
 
-/**@function createTheme TerseCSS custom theme creator */
+/**@function createTheme(theme) TerseCSS custom theme creator */
 export const createTheme = (customTheme: TerseTheme) => tUtils.th(customTheme);
 
 //main
