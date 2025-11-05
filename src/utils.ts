@@ -112,6 +112,7 @@ const createVars = (str:TerseVar[]|undefined) => {
   return text
 }
 
+
 /**@default defaultTheme TerseCSS default theme. */
 export const defaultTheme: TerseTheme = {
   title: "mystyle",
@@ -132,8 +133,7 @@ export const defaultTheme: TerseTheme = {
 /**@function resTheme TerseCSS theme resolver function. */
 export function resTheme(theme: TerseTheme) {
 
-  const vars = createVars(theme?.vars)
-  const rootVars = theme.vars !== undefined ? vars : ""
+  const rootVars = theme.vars !== undefined ? createVars(theme?.vars) : ""
 
   const tColor = theme?.color === undefined ? {} : theme?.color
   const tBk = theme?.breakpoints === undefined ? {} : theme?.breakpoints

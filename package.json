@@ -1,6 +1,6 @@
 {
   "name": "tersecss",
-  "version": "0.0.91",
+  "version": "0.1.0",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -17,7 +17,7 @@
   ],
   "author": "Ademujimi oluwaseyi zediculz",
   "license": "MIT",
-  "description": "tersecss is a lightweight css framework",
+  "description": "tersecss is a lightweight css utility-classes framework",
   "devDependencies": {
     "esbuild": "^0.25.11",
     "typescript": "^5.9.3",

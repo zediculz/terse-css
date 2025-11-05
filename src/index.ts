@@ -28,11 +28,11 @@ class TerseCSS {
   private sheet: CSSStyleSheet | null;
 
   constructor() {
+    this.sheet = this.#DOM();
     this.theme = tUtils.th(defaultTheme);
     this.nodelist = [];
     this.classlist = [];
     this.style = [this.theme.root as string, this.#ASTERICKS()];
-    this.sheet = this.#DOM();
   }
 
   #DOM() {
@@ -47,7 +47,7 @@ class TerseCSS {
     return `*{margin:0;padding:0;font-family:${fontFamily};transition:${transition};}`
   }
 
-  /**@method #lexer terseCSS Lexer */
+  /**@method #lexer terseCSS Lexer @param sh shorthand commands*/
   #lexer(sh: string) {
     const tokens: Token[] = [];
 
@@ -98,7 +98,7 @@ class TerseCSS {
             //one command
             if (values.length === 1) {
               //one command and one value
-              const token:Token = {
+              const token: Token = {
                 command: commands[0],
                 value: this.#varRes(values[0]) as string,
               };
@@ -264,7 +264,7 @@ class TerseCSS {
     //console.log(ast)
 
     //generating clasname for each nodes
-    const className = tUtils.classname(elements);
+    const className: string = tUtils.classname(elements);
 
     ast.flatMap((tk) => {
       if (tk.env === "global") {

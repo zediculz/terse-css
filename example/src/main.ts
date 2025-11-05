@@ -18,4 +18,6 @@ const myThemes = createTheme({
     transition: ".20s all ease-in"
 })
 
+
 terseCSS.init(myThemes)
+console.log(terseCSS)
