@@ -71,7 +71,11 @@ const tShs = (command: string) => {
       return "align-content";
     case "justify":
       return "justify-content";
+     case "jus":
+      return "justify-content";
     case "justifyi":
+      return "justify-items";
+    case "jusi":
       return "justify-items";
     case "flexw":
       return "flex-wrap";
@@ -99,11 +103,15 @@ const tShs = (command: string) => {
       return "font-family";
     case "text":
       return "text-align";
+     case "t":
+      return "text-align";
     case "textd":
       return "text-decoration";
     case "textt":
       return "text-transform";
     case "color":
+      return "color";
+     case "c":
       return "color";
     case "line":
       return "line-height";

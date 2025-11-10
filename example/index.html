@@ -3,24 +3,20 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <link rel="icon" type="image/svg+xml" href="/img.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TerseCSS Example</title>
+  <title>TerseCSS -Zero runtime CSS utility-classes and utility-object</title>
 </head>
 
 <body>
-  <div id="app" class="@vstack:100%:100dvh">
-    <div class="@sq:200px bg:var(primary) sm:bg-var(bo) center cur-pointer">
-      <h1 class="color-var(bo) hover:color-red">1</h1>
-      <h1 class="hover:color-var(bo)">a</h1>
-      <h1 class="color-purple sm:color-var(primary)">bvwvb</h1>
+  <div id="app" class="@vstack:100%:100dvh center bg-#fff">
+    <div class="@sq:50% center:column jus-space:evenly text-center">
+      <img class="w-156px h-auto bdr-12px hover:w-165px cur" src="/img.png" alt="tersecss-logo"/>
+      <h2 class="case:cap font-20pt sm:font-14pt">Zero runtime use CSS utility-classes and utility-object</h2>
+      <p class="font-10pt case:low sm:w-100% sm:font-8pt">Use utility Class and Utility Object to Write locally scoped classes, variables and themes, and generate <b class="case:cap c-var(primary)">CSSDOM</b> at build time. </p>
+      <span class="pd-8px bdr-8px font-12pt fontw-bold bdc-red cur">npm i tersecss</span>
     </div>
-    <div class="@rect:356px:100px center bg-green sm:hover:bg-var(primary) cur-pointer">
-      <h2 class="font-40pt color-indigo hover:color-pink">2</h2>
-    </div>
-    <div class="@sq:30% bg-blue center color-var(primary)">
-      <h3 class="font-56pt color-indigo cur-pointer">3</h3>
-    </div>
+    <h1 id="s">SOMESOME</h1>
   </div>
   <script type="module" src="/src/main.ts"></script>
 </body>

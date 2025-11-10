@@ -4,12 +4,12 @@
         "module": "esnext",
         "lib": ["es2020"],
         "declaration": true,
-        "outDir": "0.0.9dist",
+        "outDir": "dist",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
       },
       "include": ["src/**/*.ts"],
-      "exclude": ["node_modules", "0.0.9dist"]
+      "exclude": ["node_modules", "dist"]
     }

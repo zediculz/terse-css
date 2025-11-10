@@ -1,6 +1,6 @@
 ///<reference lib="dom" />
 import { defaultTheme, tUtils } from "./utils";
-import type { Token, Node, ASTType, TerseVar } from "./utils";
+import type { TerseToken, TerseNode, TerseAst, TerseVar, TObject, TOBJECT } from "./utils";
 
 export interface TerseTheme {
   title?: string,
@@ -21,18 +21,16 @@ export interface TerseTheme {
 
 /**@class TerseCSS */
 class TerseCSS {
-  private style: string[];
-  private classlist: string[];
-  private nodelist: Node[];
+  private styles: string[];
+  private classlists: string[];
   private theme: TerseTheme;
   private sheet: CSSStyleSheet | null;
 
   constructor() {
-    this.sheet = this.#DOM();
     this.theme = tUtils.th(defaultTheme);
-    this.nodelist = [];
-    this.classlist = [];
-    this.style = [this.theme.root as string, this.#ASTERICKS()];
+    this.sheet = this.#DOM();
+    this.classlists = [];
+    this.styles = [this.theme.root as string, this.#ASTERICKS()];
   }
 
   #DOM() {
@@ -47,9 +45,9 @@ class TerseCSS {
     return `*{margin:0;padding:0;font-family:${fontFamily};transition:${transition};}`
   }
 
-  /**@method #lexer terseCSS Lexer @param sh shorthand commands*/
+  /**@method #lexer terseCSS Lexer @param sh shorthand commands */
   #lexer(sh: string) {
-    const tokens: Token[] = [];
+    const tokens: TerseToken[] = [];
 
     if (sh === "") {
       return tokens;
@@ -74,7 +72,7 @@ class TerseCSS {
 
             if (varCheck !== undefined && command) {
               const varValue = this.theme.vars?.filter(v => v.name === varCheck)[0]?.value
-              const token: Token = {
+              const token: TerseToken = {
                 command,
                 value: varValue as string,
               };
@@ -98,7 +96,7 @@ class TerseCSS {
             //one command
             if (values.length === 1) {
               //one command and one value
-              const token: Token = {
+              const token: TerseToken = {
                 command: commands[0],
                 value: this.#varRes(values[0]) as string,
               };
@@ -123,7 +121,7 @@ class TerseCSS {
               //responsive option
               if (values.length === 1) {
                 //two command-Responsive option and one value
-                const token: Token = {
+                const token: TerseToken = {
                   command: commands[1],
                   value: this.#varRes(values[0]) as string,
                   mediaType: cOption,
@@ -188,9 +186,9 @@ class TerseCSS {
     }
   }
 
-  /**@method #ast terseCSS AST */
-  #ast(tks: Token[]) {
-    const ast: ASTType[] = [];
+  /**@method #ast terseCSS shorthand AST */
+  #ast(tks: TerseToken[]) {
+    const ast: TerseAst[] = [];
 
     tks.flatMap((tk) => {
       if (tk.mediaType === undefined && tk.effect === undefined) {
@@ -198,7 +196,7 @@ class TerseCSS {
         const command = tUtils.com(tk.command);
         const res = `${command}:${tk.value};`;
 
-        const astToken: ASTType = {
+        const astToken: TerseAst = {
           res,
           env: "global",
         };
@@ -209,7 +207,7 @@ class TerseCSS {
         const command = tUtils.com(tk.command);
         const res = `&:${tk.effect}{${command}:${tk.value};}`;
 
-        const astToken: ASTType = {
+        const astToken: TerseAst = {
           res,
           effect: tk.effect,
           env: "effect",
@@ -223,7 +221,7 @@ class TerseCSS {
         const media = tUtils.media(tk.mediaType, defaultTheme);
         const res = `&:${tk.effect}{${command}:${tk.value};}`;
 
-        const astToken: ASTType = {
+        const astToken: TerseAst = {
           res,
           media,
           mediaType: tk.mediaType,
@@ -238,7 +236,7 @@ class TerseCSS {
         const media = tUtils.media(tk.mediaType, this.theme);
         const res = `${command}:${tk.value};`;
 
-        const astToken: ASTType = {
+        const astToken: TerseAst = {
           res,
           media,
           mediaType: tk.mediaType,
@@ -252,20 +250,24 @@ class TerseCSS {
     return ast;
   }
 
-  /**@method #runtime terseCSS runtime */
-  #runtime(elements: Node) {
+  /**@method #runtime terseCSS utility-classes runtime */
+  #runtime(elements: TerseNode, theme?: TerseTheme) {
     let rules = "";
     let mediaRules = "";
 
+    //apply theme if available on runtime 
+    //to create cope theme and or alway use of theme in scope call
+    if (theme !== undefined) this.theme = theme
+
     const tokens = this.#lexer(elements?.classes);
-    const ast: ASTType[] = this.#ast(tokens);
+    const ast: TerseAst[] = this.#ast(tokens);
 
     //console.log(tokens)
     //console.log(ast)
-
     //generating clasname for each nodes
     const className: string = tUtils.classname(elements);
 
+    //MAIN RUNTIME CSS RULES
     ast.flatMap((tk) => {
       if (tk.env === "global") {
         //global rules
@@ -282,8 +284,9 @@ class TerseCSS {
       }
     });
 
+    //EACH CSS RULE ADDED TO STYLES []
     const rule = rules !== "" ? `.${className}{${rules}}` : undefined;
-    if (rule !== undefined) this.style.push(rule);
+    if (rule !== undefined) this.styles.push(rule);
 
     const mediaRulesArray = mediaRules
       .split("@media")
@@ -291,20 +294,20 @@ class TerseCSS {
       .map((rule) => `@media${rule}`);
 
     mediaRulesArray.forEach((mediaRule) => {
-      this.style.push(mediaRule);
+      this.styles.push(mediaRule);
     });
 
-    this.style.forEach((rule, id) => {
+    this.styles.forEach((rule, id) => {
       this.sheet?.insertRule(rule, id);
     });
 
-    this.classlist.push(className);
+    this.classlists.push(className);
     return className;
   }
 
   #getNodeList() {
     const allElements = document.querySelectorAll("*");
-    const classLists: Node[] = [];
+    const classLists: TerseNode[] = [];
 
     allElements.forEach((element, id) => {
       if (element.classList && element.classList.length > 0) {
@@ -324,31 +327,83 @@ class TerseCSS {
   /**@method init TerseCSS Entry Point. @param theme provide a custom Tersetheme or use the default  @description make sure to call this function. */
   init(theme?: TerseTheme) {
     //nodelist
-    this.nodelist = this.#getNodeList();
+    const nodelists = this.#getNodeList();
 
     //theme
     this.theme = theme as TerseTheme
 
-    this.nodelist.flatMap((el) => {
-      const classes = this.#runtime(el);
-      el.element.classList.add(classes);
+    nodelists.flatMap((el) => {
+      //console.log(el.classes)
+      const classes = this.#runtime(el, theme);
+      if (el.element) {
+        el.element.classList.add(classes);
+      }
     });
   }
 
   /**@method start TerseCSS Entry Point.  @description call this function to init TerseCSS without worrying about theme. */
   start() {
     //nodelist
-    this.nodelist = this.#getNodeList();
+    const nodelists = this.#getNodeList();
 
-    this.nodelist.flatMap((el) => {
+    nodelists.flatMap((el) => {
       const classes = this.#runtime(el);
-      el.element.classList.add(classes);
+      if (el.element) {
+        el.element.classList.add(classes);
+      }
     });
+  }
+
+  scopeStyle(nodes: TerseNode[]) {
+    const scpeNodes: { tag: string | undefined; cls: string; }[] = []
+    nodes.forEach((el) => {
+      const cls = this.#runtime(el);
+      if (el.tag) {
+        scpeNodes.push({ tag: el.tag, cls })
+      }
+    });
+
+    return scpeNodes
   }
 }
 
+
+
+//ADD ONS FOR TERSECSS ON REACT LIKE AND CLASSNAME GENERATION
+/**@function useStyleMachine(style) */
+export function useStyleMachine(style: TObject) {
+  const keys = Object.keys(style)
+  const values = Object.values(style)
+  const nodes: TerseNode[] = []
+
+  keys.forEach((tag, id) => {
+    const path = location.pathname === "/" ? "" : location.pathname.split("/")[1]
+    const exTag = path === "" ? tag : `${path}_${tag}`
+    const obj = values[id]
+
+    const classes = tUtils.scope(obj as TOBJECT)
+    const node: TerseNode = { id, tag: exTag, classes }
+    nodes.push(node)
+  })
+
+  const cls = terseCSS.scopeStyle(nodes)
+
+  const obj: Record<string, string> = {}
+
+  cls.forEach(({ tag, cls }) => {
+    if (tag) {
+      obj[tag] = `${cls}`
+    }
+  })
+  return obj
+}
+
+//TYPE-SAFETY Hooks
 /**@function createTheme(theme) TerseCSS custom theme creator */
 export const createTheme = (customTheme: TerseTheme) => tUtils.th(customTheme);
+
+/**@function tObject(style) TerseCSS utility object creator */
+export const tObject = (style: TOBJECT) => style;
 
 //main
 /**@instance of TerseCSS */
