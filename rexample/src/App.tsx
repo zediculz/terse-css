@@ -1,19 +1,12 @@
-import { useStyleMachine, tObject } from "../../src/index"
-
-const wrap = tObject({
-  color: "red",
-  md: { color: "green" },
-  sm: {
-    color: "blue"
-  }
-})
+//import { useStyleMachine, tObject } from "../../src/index"
+import Hi from "./assets/hi"
+import style from "./style.css"
 
 function App() {
-  const style = useStyleMachine({ wrap: wrap })
-  console.log(style)
-
   return (
-    <h1 className={style.wrap}>Hello world!</h1>
+    <div className={style.wrap}>
+      <Hi />
+    </div>
   )
 }
 

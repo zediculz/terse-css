@@ -22,10 +22,66 @@ export interface TerseAst {
 export interface TerseVar { name: string, value: string }
 export interface TerseNode { tag?: string, classes: string, element?: Element, id: number }
 
+/*
+
+
+    case "p":
+      return "position";
+    case "pos":
+      return "position";
+    case "top":
+      return "top";
+    case "bottom":
+      return "bottom";
+    case "left":
+      return "left";
+    case "right":
+      return "right";
+    case "z":
+      return "z-index";
+    case "pd":
+      return "padding";
+    case "pdl":
+      return "padding-left";
+    case "pdr":
+      return "padding-right";
+    case "pdt":
+      return "padding-top";
+    case "pdb":
+      return "padding-bottom";
+    case "mg":
+      return "margin";
+    case "mgl":
+      return "margin-left";
+    case "mgr":
+      return "margin-right";
+    case "mgt":
+      return "margin-top";
+    case "mgb":
+      return "margin-bottom";
+    case "float":
+      return "float";
+    case "clear":
+      return "clear";
+    case "overf":
+      return "overflow";
+    case "overflow":
+      return "overflow";
+
+*/
+
+  
 export interface TOBJECT {
   w?: string;
   h?: string;
-  "@wrap"?: string; "@rect"?: string; "@sq"?: string;
+  maxw?: string;
+  maxh?: string;
+  minw?: string;
+  minh?: string;
+  /*display */
+  dis?: string
+  d?: string
+  "@wrap"?: string; "@rect"?: string; "@sq"?: string;  "@case"?: string;
   "@stack"?: string; "@vstack"?: string; "@hstack"?: string;
   font?: string
   color?: string
@@ -33,10 +89,13 @@ export interface TOBJECT {
   sm?: TOBJECT;
   md?: TOBJECT;
   lg?: TOBJECT;
+  center?: string
+  jus?: string
+  flex?: string,
 }
 
 export interface TObject {
-  [key: string]: TOBJECT | TerseTheme
+  [key: string]: TOBJECT | TerseTheme | string
 }
 
 /**@function tMedia responsive media query */
@@ -238,7 +297,7 @@ const shOneLinerOption = (str: string[]) => {
     case "upcase":
       return "textt-uppercase";
     case "b":
-      console.log(str)
+      //console.log(str)
       return "";
     default:
       return "";
@@ -247,40 +306,46 @@ const shOneLinerOption = (str: string[]) => {
 
 //ADD ONs
 function scope(style: TOBJECT) {
-  const keys = Object.keys(style)
-  const values = Object.values(style)
 
-  const arr: string[] = []
-  const checkMedia = (c: string) => c === "sm" || c == "md" || c === "lg"
-  const checkFirst = (c: string) => c.split("")[0] === "@"
+  if (typeof style !== "object") {
+    return style
+  } else {
 
-  keys.forEach((command, index) => {
-    const value = values[index]
+    const keys = Object.keys(style)
+    const values = Object.values(style)
 
-    if (checkFirst(command)) {
-      arr.push(`${command}:${value}`)
-    } else if (checkMedia(command)) {
-      const resclass = scope(value)
-      const val = () => {
-        let t = ""
-        resclass.split(" ").forEach(v => {
-          t += `${command}:${v} `
-        })
+    const arr: string[] = []
+    const checkMedia = (c: string) => c === "sm" || c == "md" || c === "lg"
+    const checkFirst = (c: string) => c.split("")[0] === "@"
 
-        return t
+    keys.forEach((command, index) => {
+      const value = values[index]
+
+      if (checkFirst(command)) {
+        arr.push(`${command}:${value}`)
+      } else if (checkMedia(command)) {
+        const resclass = scope(value)
+        const val = () => {
+          let t = ""
+          resclass.split(" ").forEach(v => {
+            t += `${command}:${v} `
+          })
+
+          return t
+        }
+
+        const cls = val()
+        arr.push(cls)
+      } else {
+        const cls = `${command}-${value}`
+        arr.push(cls)
       }
 
-      const cls = val()
-      arr.push(cls)
-    } else {
-      const cls = `${command}-${value}`
-      arr.push(cls)
-    }
+    })
 
-  })
-
-  const classes = arr.join(" ")
-  return classes
+    const classes = arr.join(" ")
+    return classes
+  }
 }
 
 /**@method tUtils TerseCSS Utils functions. */

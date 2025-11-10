@@ -1,4 +1,5 @@
 ///<reference lib="dom" />
+
 import { defaultTheme, tUtils } from "./utils";
 import type { TerseToken, TerseNode, TerseAst, TerseVar, TObject, TOBJECT } from "./utils";
 
@@ -309,6 +310,7 @@ class TerseCSS {
     const allElements = document.querySelectorAll("*");
     const classLists: TerseNode[] = [];
 
+
     allElements.forEach((element, id) => {
       if (element.classList && element.classList.length > 0) {
         classLists.push({
@@ -325,7 +327,7 @@ class TerseCSS {
 
   //entry point
   /**@method init TerseCSS Entry Point. @param theme provide a custom Tersetheme or use the default  @description make sure to call this function. */
-  init(theme?: TerseTheme) {
+  globalStyle(theme?: TerseTheme) {
     //nodelist
     const nodelists = this.#getNodeList();
 
@@ -341,13 +343,42 @@ class TerseCSS {
     });
   }
 
-  /**@method start TerseCSS Entry Point.  @description call this function to init TerseCSS without worrying about theme. */
-  start() {
+  //entry point
+  /**@method init TerseCSS Entry Point. @param theme provide a custom Tersetheme or use the default  @description make sure to call this function. */
+  startReact(theme?: TerseTheme) {
     //nodelist
-    const nodelists = this.#getNodeList();
+
+  function getNodeList() {
+    const allElements = document.querySelectorAll("*");
+    const classLists: TerseNode[] = [];
+
+    allElements.forEach((element, id) => {
+      if (element.getAttribute("id") === "root" || element.getAttribute("id") === "app") {
+        console.log(element)
+        const allEls = element.querySelectorAll("*")
+        allEls.forEach(e => console.log(e))
+
+        /*
+        classLists.push({
+          tag: element.tagName?.toLocaleLowerCase(),
+          classes: Array.from(element.classList).join(" "),
+          element,
+          id,
+        }); */
+      }
+    });
+
+    return classLists;
+  }
+    const nodelists = getNodeList();
+    console.log(nodelists)
+
+    //theme
+    this.theme = theme as TerseTheme
 
     nodelists.flatMap((el) => {
-      const classes = this.#runtime(el);
+      //console.log(el.classes)
+      const classes = this.#runtime(el, theme);
       if (el.element) {
         el.element.classList.add(classes);
       }
@@ -355,38 +386,42 @@ class TerseCSS {
   }
 
   scopeStyle(nodes: TerseNode[]) {
-    const scpeNodes: { tag: string | undefined; cls: string; }[] = []
+    const scopeNodes: { tag: string | undefined; cls: string; }[] = []
     nodes.forEach((el) => {
       const cls = this.#runtime(el);
+      
       if (el.tag) {
-        scpeNodes.push({ tag: el.tag, cls })
+        scopeNodes.push({ tag: el.tag, cls })
       }
     });
 
-    return scpeNodes
+    //console.log(scopeNodes)
+    return scopeNodes
   }
 }
 
 
-
 //ADD ONS FOR TERSECSS ON REACT LIKE AND CLASSNAME GENERATION
 /**@function useStyleMachine(style) */
-export function useStyleMachine(style: TObject) {
+export function useStyleMachine(style: TOBJECT) {
+  //console.log(style)
   const keys = Object.keys(style)
   const values = Object.values(style)
+  
   const nodes: TerseNode[] = []
 
   keys.forEach((tag, id) => {
-    const path = location.pathname === "/" ? "" : location.pathname.split("/")[1]
-    const exTag = path === "" ? tag : `${path}_${tag}`
+    //const path = location.pathname === "/" ? "" : location.pathname.split("/")[1]
+    //const exTag = path === "" ? tag : `${path}_${tag}`
     const obj = values[id]
 
     const classes = tUtils.scope(obj as TOBJECT)
-    const node: TerseNode = { id, tag: exTag, classes }
+    const node: TerseNode = { id, tag, classes }
     nodes.push(node)
   })
 
   const cls = terseCSS.scopeStyle(nodes)
+  //console.log(terseCSS)
 
   const obj: Record<string, string> = {}
 
@@ -398,14 +433,19 @@ export function useStyleMachine(style: TObject) {
   return obj
 }
 
+export function tStyleMachine(style: TObject) {
+  return useStyleMachine(style)
+}
+
 //TYPE-SAFETY Hooks
 /**@function createTheme(theme) TerseCSS custom theme creator */
 export const createTheme = (customTheme: TerseTheme) => tUtils.th(customTheme);
 
 /**@function tObject(style) TerseCSS utility object creator */
-export const tObject = (style: TOBJECT) => style;
+export const tStyle = (style: TOBJECT) => style;
 
 //main
 /**@instance of TerseCSS */
+//runtime
 export const terseCSS = new TerseCSS();
 export default TerseCSS;
