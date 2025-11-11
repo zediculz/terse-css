@@ -20,7 +20,7 @@ export interface TerseAst {
   effect?: string,
 }
 export interface TerseVar { name: string, value: string }
-export interface TerseNode { tag?: string, classes: string, element?: Element, id: number }
+export interface TerseNode { tag?: string, classes: string, element?: Element, id?: number }
 
   
 export interface TOBJECT {
@@ -241,12 +241,11 @@ export const defaultTheme: TerseTheme = {
 /**@function resTheme TerseCSS theme resolver function. */
 export function resTheme(theme: TerseTheme) {
 
-  const rootVars = theme.vars !== undefined ? createVars(theme?.vars) : ""
+  const root = ROOT(theme)
 
   const tColor = theme?.color === undefined ? {} : theme?.color
   const tBk = theme?.breakpoints === undefined ? {} : theme?.breakpoints
-  const root = theme?.root === undefined ? `:root{${defaultTheme.root}${rootVars}}` : `:root{${theme.root}${rootVars}}`
-
+ 
   const newTheme: TerseTheme = {
     title: theme?.title === undefined ? defaultTheme.title : theme.title,
     color: { ...defaultTheme.color, ...tColor },
@@ -258,6 +257,12 @@ export function resTheme(theme: TerseTheme) {
   }
 
   return newTheme
+}
+
+function ROOT(theme:TerseTheme) {
+  const rootVars = theme.vars !== undefined ? createVars(theme?.vars) : ""
+  const root = theme?.root === undefined ? `:root{${defaultTheme.root}${rootVars}}` : `:root{${theme.root}${rootVars}}`
+  return root
 }
 
 /**@function shOneLiner TerseCSS one-line shorthand utiltiy function. */
@@ -409,5 +414,7 @@ export const tUtils = {
   one: shOneLiner,
   oneOpt: shOneLinerOption,
   th: resTheme,
-  machine
+  machine,
+  createVars,
+  root: ROOT
 };

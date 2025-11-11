@@ -1,11 +1,6 @@
 import { terseCSS, createTheme } from "../../src/index"
 
-const vars = [
-    { name: "primary", value: "#0000ff" },
-    { name: "bo", value: "rebeccapurple" },
-    { name: "width", value: "1000px" },
-]
-
+//PROVIDE YOUR CUSTOM THEME
 const myThemes = createTheme({
     color: {
         primary: "purple"
@@ -14,9 +9,13 @@ const myThemes = createTheme({
         sm: "max-width:390px",
         md: "max-width:768px"
     },
-    vars,
+    vars: [
+        { name: "primary", value: "#0000ff" },
+        { name: "bo", value: "rebeccapurple" },
+    ],
     transition: ".20s all ease-in"
 })
 
-terseCSS.globalStyle(myThemes)
+//START GLOBALCSS AND USE UTILITY CLASS IN YOUR HTML
+terseCSS.startGlobalCSS(myThemes)
 console.log(terseCSS)

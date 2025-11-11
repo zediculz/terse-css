@@ -21,15 +21,14 @@ const myThemes = createTheme({
   font: '"Roboto Mono", monospace"'
 })
 
-terseCSS.applyTheme(myThemes)
 
 const wrap = tStyle({
-  "@vstack": "35%:50%",
+  "@vstack": "45%:50%",
   align: "center",
   text: "center"
 })
 
-const stack = tStyle({
+export const stack = tStyle({
   "@vstack": "100%:100dvh",
   align: "center",
   jus: "center"
@@ -37,7 +36,7 @@ const stack = tStyle({
 
 //"w-156px h-auto hover:w-165px cur"
 const img = tStyle({
-  w: "154px",
+  w: "124px",
   h: "auto",
   cur: "pointer",
   "@hover": {
@@ -81,4 +80,4 @@ const style = tStyleMachine({
 })
 
 export default style
-//console.log(terseCSS)
+console.log(terseCSS)

@@ -23,15 +23,16 @@ export interface TerseTheme {
 /**@class TerseCSS */
 class TerseCSS {
   private styles: string[];
-  private classlists: string[];
-  private theme: TerseTheme;
+  private classlist: string[];
+  private themes: TerseTheme;
   private sheet: CSSStyleSheet | null;
 
   constructor() {
-    this.theme = tUtils.th(defaultTheme);
+    //create theme first, load CSSDOM, init the classlist and style []
+    this.themes = tUtils.th(defaultTheme);
     this.sheet = this.#DOM();
-    this.classlists = [];
-    this.styles = [this.theme.root as string, this.#ASTERICKS()];
+    this.classlist = [];
+    this.styles = [this.themes.root as string, this.#ASTERICKS()];
   }
 
   #DOM() {
@@ -41,8 +42,8 @@ class TerseCSS {
   }
 
   #ASTERICKS(withimport:boolean = false) {
-    const fontFamily = this.theme.font
-    const transition = this.theme.transition
+    const fontFamily = this.themes.font
+    const transition = this.themes.transition
     return `*{margin:0;padding:0;font-family:${fontFamily};transition:${transition};}`
   }
 
@@ -72,7 +73,7 @@ class TerseCSS {
           } else {
 
             if (varCheck !== undefined && command) {
-              const varValue = this.theme.vars?.filter(v => v.name === varCheck)[0]?.value
+              const varValue = this.themes.vars?.filter(v => v.name === varCheck)[0]?.value
               const token: TerseToken = {
                 command,
                 value: varValue as string,
@@ -182,7 +183,7 @@ class TerseCSS {
       return value
     } else if (varSplit[1] !== undefined) {
       const vars = varSplit[1].split("(")[1].split(")")[0]
-      const varValue = this.theme.vars?.filter(v => v.name === vars)[0]
+      const varValue = this.themes.vars?.filter(v => v.name === vars)[0]
       return varValue?.value
     }
   }
@@ -234,7 +235,7 @@ class TerseCSS {
       } else if (tk.mediaType !== undefined && tk.effect === undefined) {
         //"all responsive"
         const command = tUtils.com(tk.command);
-        const media = tUtils.media(tk.mediaType, this.theme);
+        const media = tUtils.media(tk.mediaType, this.themes);
         const res = `${command}:${tk.value};`;
 
         const astToken: TerseAst = {
@@ -258,7 +259,7 @@ class TerseCSS {
 
     //apply theme if available on runtime 
     //to create cope theme and or alway use of theme in scope call
-    if (theme !== undefined) this.theme = theme
+    if (theme !== undefined) this.themes = theme
 
     const tokens = this.#lexer(elements?.classes);
     const ast: TerseAst[] = this.#ast(tokens);
@@ -302,7 +303,7 @@ class TerseCSS {
       this.sheet?.insertRule(rule, id);
     });
 
-    this.classlists.push(className);
+    this.classlist.push(className);
     return className;
   }
 
@@ -325,15 +326,15 @@ class TerseCSS {
     return classLists;
   }
 
-  //entry point
-  /**@method init TerseCSS Entry Point. @param theme provide a custom Tersetheme or use the default  @description make sure to call this function. */
-  globalStyle(theme?: TerseTheme) {
+  //Global and HTMLNODE Entry Point
+  //this use utility class first
+  /**@method startGlobalCSS generate global style using the utility class provided on HTML NODES. @param theme provide a custom Tersetheme or use the default  @description globalStyle is one of the way TerseCSS can be used, globalStyle make use of Utility Class which are expected to be provided on each HTML, globalStyle works with the HTML NODE of your App, all the utility class will be automatically converter to a CSSDOM. */
+  startGlobalCSS(theme?: TerseTheme) {
     //nodelist
     const nodelists = this.#getNodeList();
 
     //theme
-    this.theme = theme as TerseTheme
-    console.log(this.theme)
+    this.themes = theme === undefined ? defaultTheme : theme as TerseTheme
 
     nodelists.flatMap((el) => {
       //console.log(el.classes)
@@ -344,18 +345,16 @@ class TerseCSS {
     });
   }
 
-  applyTheme(theme:TerseTheme) {
-    this.theme = theme as TerseTheme
-    this.styles[1] = this.#ASTERICKS()
-  }
-
-  scopeStyle(nodes: TerseNode[]) {
-    const scopeNodes: { tag: string | undefined; cls: string; }[] = []
+  //SCOPED and Utility Objects Entry Point
+  //this use utility object first
+  /**@method scopeStyle generate scoped style using the utility object. @param nodes NodeList  @description scopeStyle. */
+  scopedRuntime(nodes: TerseNode[]) {
+    const scopeNodes: { tag: string | undefined; classname: string; }[] = []
     nodes.forEach((el) => {
-      const cls = this.#runtime(el);
+      const classname = this.#runtime(el);
       
       if (el.tag) {
-        scopeNodes.push({ tag: el.tag, cls })
+        scopeNodes.push({ tag: el.tag, classname })
       }
     });
 
@@ -366,7 +365,8 @@ class TerseCSS {
 
 //ADD ONS FOR TERSECSS ON REACT LIKE AND CLASSNAME GENERATION
 /**@function useStyleMachine(style) */
-export function useStyleMachine(style: TOBJECT) {
+function StyleMachine(style: TObject) {
+  //console.log(style)
   const nodes: TerseNode[] = []
   const keys = Object.keys(style)
   const values = Object.values(style)
@@ -377,32 +377,56 @@ export function useStyleMachine(style: TOBJECT) {
     const node: TerseNode = { id, tag, classes }
     nodes.push(node)
   })
-
-  const cls = terseCSS.scopeStyle(nodes)
+ 
+  const classes = terseCSS.scopedRuntime(nodes)
   const obj: Record<string, string> = {}
-  cls.forEach(({ tag, cls }) => {
+  classes.forEach(({ tag, classname }) => {
     if (tag) {
-      obj[tag] = `${cls}`
+      obj[tag] = `${classname}`
     }
   })
   return obj
 }
 
-//TYPE-SAFETY Hooks
+export function useSomeSome(style: TOBJECT, name?:string) {
+  const tag = name === undefined ? "class" : name
+  const nodes: TerseNode[] = []
+  const cls = tUtils.machine(style as TOBJECT)
+  const node: TerseNode = {  tag, classes: cls }
+  nodes.push(node)
+
+  const classes = terseCSS.scopedRuntime(nodes)
+  console.log(classes)
+  const obj: Record<string, string> = {}
+  classes.forEach(({ tag, classname }) => {
+    console.log(tag, classname)
+    if (tag) {
+      obj[tag] = `${classname}`
+    }
+  })
+  console.log(obj)
+  return classes[0].classname
+}
+
+
+//TYPE-SAFETY HOOKS
 /**@function createTheme(theme) TerseCSS custom theme creator */
 export const createTheme = (customTheme: TerseTheme) => tUtils.th(customTheme);
 
-/**@function tStyle(style) TerseCSS utility object creator */
-export const tStyle = (style: TOBJECT | string) => {
-  if (typeof style === "string") {
-    return style as string
-  } else {
-    return style as TOBJECT
-  }
-}
+/**@function createTheme(theme) TerseCSS custom theme creator */
+export const createVars = (vars:TerseVar[]|undefined) => tUtils.createVars(vars);
 
+/**@function tStyle(style) TerseCSS utility object creator */
+export const tStyle = (style: TOBJECT) => style as TOBJECT
+
+
+//Scoped Runtime
 /**@function tStyleMachine(style) TerseCSS custom theme creator */
-export const tStyleMachine = (style: TObject) => useStyleMachine(style)
+export const tStyleMachine = (style: TObject) => StyleMachine(style)
+
+//runtime
+//start globally and make use of changes
+//terseCSS.startGlobalRuntime()
 
 //main
 /**@instance of TerseCSS */
