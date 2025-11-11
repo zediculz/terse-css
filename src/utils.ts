@@ -1,5 +1,6 @@
 import type { TerseTheme } from "./index"
 import tShs from "./shs";
+import { TOBJECT } from "./tobj";
 
 export interface TerseToken {
   command: string;
@@ -23,113 +24,6 @@ export interface TerseVar { name: string, value: string }
 export interface TerseNode { tag?: string, classes: string, element?: Element, id?: number }
 
   
-export interface TOBJECT {
-
-  w?: string;
-  h?: string;
-  maxw?: string;
-  maxh?: string;
-  minw?: string;
-  minh?: string;
-  p?: string;
-  pos?: string;
-  z?: string;
-  top?: string;
-  bottom?: string;
-  left?: string;
-  right?: string;
-
-  /*display */
-  dis?: string
-  d?: string
-  float?: string;
-  clear?: string;
-  overf?: string;
-  overflow?: string;
-
-  //text
-  font?: string
-  fonts?: string
-  fontf?: string
-  fontw?: string
-  color?: string
-  c?: string
-  text?: string
-  t?: string
-  textd?: string
-  textt?: string
-  line?:string
-  letter?:string
-  word?:string
-
-
-  //background
-  bg?: string,
-  bgc?: string,
-  bgi?: string,
-  bgr?: string,
-  bgp?: string,
-  bgs?: string,
-  
-  pd?:string
-  pdt?:string
-  pdb?:string
-  pdr?: string
-  pdl?: string
-  
-  mg?:string
-  mgt?:string
-  mgb?:string
-  mgr?: string
-  mgl?: string
-  
-  //flex
-  jus?: string
-  justify?: string
-  jusi?: string
-  flexd?: string,
-  flexw?: string,
-  flexf?: string,
-  align?: string
-
-    //effects
-  cur?:string
-  op?: string
-  boxs?:string
-  bs?:string
-  rt?:string
-  sc?: string
-  scale?:string
-  filter?:string
-  trsl?:string
-  trans?:string
-  ani?:string
-  outl?: string
-  out?: string
-  space?: string
-  
-   //border
-  bd?: string
-  bdw?: string
-  bds?: string
-  bdc?: string
-  bdr?: string
-
-   //grid
-  gtc?: string
-  gtr?: string
-  gta?: string
-  gap?: string
-
-  /*responsive */
-  sm?: TOBJECT;
-  md?: TOBJECT;
-  lg?: TOBJECT;
-  "@hover"?: TOBJECT;
-  //shorthand with @keyword
-  "@wrap"?: string; "@rect"?: string; "@sq"?: string;  "@case"?: string;
-  "@stack"?: string; "@vstack"?: string; "@hstack"?: string;
-}
 
 export interface TObject {
   [key: string]: TOBJECT | TerseTheme | string
@@ -345,11 +239,10 @@ const shOneLinerOption = (str: string[]) => {
   }
 };
 
-//ADD ONs
+//SCOPE ADD ON FOR *.CSS.TS USAGE
+//turns each TOBJECT into terseCSS shorthand code
 function machine(style: TOBJECT) {
-  if (typeof style !== "object") {
-    return style
-  } else {
+  console.log(style)
     const keys = Object.keys(style)
     const values = Object.values(style)
 
@@ -357,7 +250,7 @@ function machine(style: TOBJECT) {
     const checkMedia = (c: string) => c === "sm" || c == "md" || c === "lg"
     const checkFirst = (c: string) => c.split("")[0] === "@"
 
-    keys.forEach((command, index) => {
+  keys.forEach((command, index) => {
       const value = values[index]
 
       if (checkFirst(command)) {
@@ -376,7 +269,7 @@ function machine(style: TOBJECT) {
           const cls = val()
           arr.push(cls)
 
-        }else {
+        } else {
           const cls = `${command}:${value}`
           arr.push(cls)
         }
@@ -401,10 +294,30 @@ function machine(style: TOBJECT) {
 
     })
 
-    const classes = arr.join(" ")
+
+  const classes = arr.join(" ")
     return classes
-  }
 }
+
+//get nodelist of the entire Document
+function getNodeList() {
+    const allElements = document.querySelectorAll("*");
+    const classLists: TerseNode[] = [];
+
+
+    allElements.forEach((element, id) => {
+      if (element.classList && element.classList.length > 0) {
+        classLists.push({
+          tag: element.tagName?.toLocaleLowerCase(),
+          classes: Array.from(element.classList).join(" "),
+          element,
+          id,
+        });
+      }
+    });
+
+    return classLists;
+  }
 
 /**@method tUtils TerseCSS Utils functions. */
 export const tUtils = {
@@ -416,5 +329,6 @@ export const tUtils = {
   th: resTheme,
   machine,
   createVars,
-  root: ROOT
+  root: ROOT,
+  getNodeList
 };

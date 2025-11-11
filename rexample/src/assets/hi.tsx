@@ -1,12 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import style from "../style.css"
-//import { tStyle, useStyleMachine } from "../../../src"
 
-//const bg = tStyle("@sq: 50 % center: column jus - space: evenly text - center")
-
-function Hi() {
+function Wrap() {
     //const b = useStyleMachine(bg)
-
     return (
         <div className={style.wrap}>
             <img className={style.img} src="/img.png" alt="tersecss-logo" />
@@ -17,4 +13,4 @@ function Hi() {
     )
 }
 
-export default Hi
+export default Wrap

@@ -1,7 +1,8 @@
 ///<reference lib="dom" />
 
 import { defaultTheme, tUtils } from "./utils";
-import type { TerseToken, TerseNode, TerseAst, TerseVar, TObject, TOBJECT } from "./utils";
+import type { TerseToken, TerseNode, TerseAst, TerseVar, TObject } from "./utils";
+import type { TOBJECT } from "./tobj";
 
 export interface TerseTheme {
   title?: string,
@@ -307,42 +308,27 @@ class TerseCSS {
     return className;
   }
 
-  #getNodeList() {
-    const allElements = document.querySelectorAll("*");
-    const classLists: TerseNode[] = [];
-
-
-    allElements.forEach((element, id) => {
-      if (element.classList && element.classList.length > 0) {
-        classLists.push({
-          tag: element.tagName?.toLocaleLowerCase(),
-          classes: Array.from(element.classList).join(" "),
-          element,
-          id,
-        });
-      }
-    });
-
-    return classLists;
-  }
-
   //Global and HTMLNODE Entry Point
   //this use utility class first
   /**@method startGlobalCSS generate global style using the utility class provided on HTML NODES. @param theme provide a custom Tersetheme or use the default  @description globalStyle is one of the way TerseCSS can be used, globalStyle make use of Utility Class which are expected to be provided on each HTML, globalStyle works with the HTML NODE of your App, all the utility class will be automatically converter to a CSSDOM. */
   startGlobalCSS(theme?: TerseTheme) {
     //nodelist
-    const nodelists = this.#getNodeList();
+    const nodelists = tUtils.getNodeList();
 
     //theme
-    this.themes = theme === undefined ? defaultTheme : theme as TerseTheme
+    this.applyTheme(theme)
 
-    nodelists.flatMap((el) => {
+    nodelists.forEach((el) => {
       //console.log(el.classes)
       const classes = this.#runtime(el, theme);
       if (el.element) {
         el.element.classList.add(classes);
       }
     });
+  }
+
+  applyTheme(theme?: TerseTheme) {
+   this.themes = theme === undefined ? defaultTheme : theme as TerseTheme
   }
 
   //SCOPED and Utility Objects Entry Point
@@ -362,10 +348,12 @@ class TerseCSS {
   }
 }
 
-
+///////////////////////////////////////////////////////////////////
+//HOOKS FOR *css.ts files
 //ADD ONS FOR TERSECSS ON REACT LIKE AND CLASSNAME GENERATION
+//scpedRuntime Core
 /**@function useStyleMachine(style) */
-function StyleMachine(style: TObject) {
+function scopeRuntimeCore(style: TObject) {
   //console.log(style)
   const nodes: TerseNode[] = []
   const keys = Object.keys(style)
@@ -388,48 +376,34 @@ function StyleMachine(style: TObject) {
   return obj
 }
 
-export function useSomeSome(style: TOBJECT, name?:string) {
-  const tag = name === undefined ? "class" : name
-  const nodes: TerseNode[] = []
-  const cls = tUtils.machine(style as TOBJECT)
-  const node: TerseNode = {  tag, classes: cls }
-  nodes.push(node)
 
-  const classes = terseCSS.scopedRuntime(nodes)
-  console.log(classes)
-  const obj: Record<string, string> = {}
-  classes.forEach(({ tag, classname }) => {
-    console.log(tag, classname)
-    if (tag) {
-      obj[tag] = `${classname}`
-    }
-  })
-  console.log(obj)
-  return classes[0].classname
+//Scoped Runtime hook
+/**@function tStyleMachine(style) create scope CSS in *.css.ts file for your App. */
+export const tStyleMachine = (style: TObject) => {
+  return scopeRuntimeCore(style)
+}
+
+/**@function tStyle(style) TerseCSS utility object creator */
+export const tStyle = (style: TOBJECT) => {
+  console.log(tUtils.machine(style))
+  return style as TOBJECT
 }
 
 
-//TYPE-SAFETY HOOKS
+///////////////////////////////////////////////////////////////
+//RUNTIME FOR GLOBAL AND UTILITY CLASSES
+//TYPE-SAFETY HOOKS FOR TERSE CLASS
 /**@function createTheme(theme) TerseCSS custom theme creator */
 export const createTheme = (customTheme: TerseTheme) => tUtils.th(customTheme);
 
-/**@function createTheme(theme) TerseCSS custom theme creator */
-export const createVars = (vars:TerseVar[]|undefined) => tUtils.createVars(vars);
-
-/**@function tStyle(style) TerseCSS utility object creator */
-export const tStyle = (style: TOBJECT) => style as TOBJECT
-
-
-//Scoped Runtime
-/**@function tStyleMachine(style) TerseCSS custom theme creator */
-export const tStyleMachine = (style: TObject) => StyleMachine(style)
-
-//runtime
-//start globally and make use of changes
-//terseCSS.startGlobalRuntime()
+/**@function applyTheme(theme) TerseCSS theme applied */
+export const applyTheme = (theme?: TerseTheme) => terseCSS.applyTheme(theme);
 
 //main
 /**@instance of TerseCSS */
 //runtime
 export const terseCSS = new TerseCSS();
 export default TerseCSS;
+
+//USE GLOBALCSS TO CREATE A GLOBAL CSSDOM STYLED WITH UTULITY CLASS 
+//USE SCOPED CSS TO CREATE SCOPED CSSDOM WITH UTILITY OBJECTS

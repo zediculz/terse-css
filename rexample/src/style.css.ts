@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { terseCSS, tStyleMachine, tStyle, createTheme } from "../../src/index"
-
-const vars = [
-    { name: "primary", value: "#0000ff" },
-    { name: "bo", value: "rebeccapurple" },
-    { name: "width", value: "1000px" },
-]
+import { terseCSS, tStyleMachine, tStyle, createTheme, applyTheme } from "../../src/index"
 
 const myThemes = createTheme({
     color: {
@@ -16,16 +10,22 @@ const myThemes = createTheme({
         sm: "max-width:390px",
         md: "max-width:768px"
     },
-    vars,
+    vars: [
+    { name: "primary", value: "#0000ff" },
+    { name: "bo", value: "rebeccapurple" },
+    { name: "width", value: "1000px" },
+],
   transition: ".2s all ease-in",
-  font: '"Roboto Mono", monospace"'
+  font: 'Roboto Mono, monospace'
 })
 
+applyTheme(myThemes)
 
 const wrap = tStyle({
   "@vstack": "45%:50%",
   align: "center",
-  text: "center"
+  text: "center",
+  maxh: "100px"
 })
 
 export const stack = tStyle({
@@ -73,6 +73,7 @@ const span = tStyle({
   font: "12pt",
   fontw: "bold",
   cur: "pointer",
+  bg: "red"
 })
 
 const style = tStyleMachine({
@@ -80,4 +81,4 @@ const style = tStyleMachine({
 })
 
 export default style
-console.log(terseCSS)
+console.log(terseCSS) 

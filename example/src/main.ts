@@ -1,4 +1,4 @@
-import { terseCSS, createTheme } from "../../src/index"
+import { terseCSS, createTheme, applyTheme } from "../../src/index"
 
 //PROVIDE YOUR CUSTOM THEME
 const myThemes = createTheme({
@@ -18,4 +18,3 @@ const myThemes = createTheme({
 
 //START GLOBALCSS AND USE UTILITY CLASS IN YOUR HTML
 terseCSS.startGlobalCSS(myThemes)
-console.log(terseCSS)

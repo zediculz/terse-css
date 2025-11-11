@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
-import Hi from "./assets/hi"
-//import { tStyle, useSomeSome } from "../../src/index"
+import Wrap from "./assets/hi"
+//import { tStyle } from "../../src/index"
 import style from "./style.css"
 
 function App() {
-
   return (
     <div className={style.stack}>
-      <button>click ME!</button>
-      <Hi />
+      <Wrap />
     </div>
   )
 }
