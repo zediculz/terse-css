@@ -1,24 +1,84 @@
-import { tStyleMachine, tStyle } from "../../src/index"
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { terseCSS, tStyleMachine, tStyle, createTheme } from "../../src/index"
+
+const vars = [
+    { name: "primary", value: "#0000ff" },
+    { name: "bo", value: "rebeccapurple" },
+    { name: "width", value: "1000px" },
+]
+
+const myThemes = createTheme({
+    color: {
+      primary: "#1800dd",
+      secondary: "#000"
+    },
+    breakpoints: {
+        sm: "max-width:390px",
+        md: "max-width:768px"
+    },
+    vars,
+  transition: ".2s all ease-in",
+  font: '"Roboto Mono", monospace"'
+})
+
+terseCSS.applyTheme(myThemes)
 
 const wrap = tStyle({
+  "@vstack": "35%:50%",
+  align: "center",
+  text: "center"
+})
+
+const stack = tStyle({
   "@vstack": "100%:100dvh",
-  dis: "flex",
-  jus: "space-evenly"
+  align: "center",
+  jus: "center"
 })
 
-const hi = tStyle({
-   "@sq": "50%",
-    center: "column",
-    jus: "space-evenly",
-    color: "black",
-    font: "10pt",
+//"w-156px h-auto hover:w-165px cur"
+const img = tStyle({
+  w: "154px",
+  h: "auto",
+  cur: "pointer",
+  "@hover": {
+    w: "160px",
+    h: "auto"
+  }
 })
 
-const img = "w-156px h-auto bdr-12px hover:w-165px cur"
-const h1 = "case:cap font-18pt sm:font-13pt"
-const p = "font-10pt case:low sm:w-100% sm:font-8pt"
-const b = "case:cap c-var(primary)"
-const span = "pd-8px bdr-8px font-12pt fontw-bold bdc-red cur"
+const h = tStyle({
+  "@case": "cap",
+  font: "16pt",
+  text: "center",
+  sm: {
+    font: "13pt"
+  }
+})
 
-const style = tStyleMachine({ wrap, hi, img, p, h1, b, span })
+const p = tStyle({
+  "@case": "low",
+  font: "10pt",
+  text: "center",
+  sm: {
+    font: "8pt"
+  }
+})
+
+const b = tStyle({
+  "@case": "up",
+  c: "var(primary)"
+})
+
+const span = tStyle({
+  pd: "8px",
+  font: "12pt",
+  fontw: "bold",
+  cur: "pointer",
+})
+
+const style = tStyleMachine({
+  stack, img, wrap, h, b, p, span
+})
+
 export default style
+//console.log(terseCSS)

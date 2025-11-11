@@ -22,76 +22,113 @@ export interface TerseAst {
 export interface TerseVar { name: string, value: string }
 export interface TerseNode { tag?: string, classes: string, element?: Element, id: number }
 
-/*
-
-
-    case "p":
-      return "position";
-    case "pos":
-      return "position";
-    case "top":
-      return "top";
-    case "bottom":
-      return "bottom";
-    case "left":
-      return "left";
-    case "right":
-      return "right";
-    case "z":
-      return "z-index";
-    case "pd":
-      return "padding";
-    case "pdl":
-      return "padding-left";
-    case "pdr":
-      return "padding-right";
-    case "pdt":
-      return "padding-top";
-    case "pdb":
-      return "padding-bottom";
-    case "mg":
-      return "margin";
-    case "mgl":
-      return "margin-left";
-    case "mgr":
-      return "margin-right";
-    case "mgt":
-      return "margin-top";
-    case "mgb":
-      return "margin-bottom";
-    case "float":
-      return "float";
-    case "clear":
-      return "clear";
-    case "overf":
-      return "overflow";
-    case "overflow":
-      return "overflow";
-
-*/
-
   
 export interface TOBJECT {
+
   w?: string;
   h?: string;
   maxw?: string;
   maxh?: string;
   minw?: string;
   minh?: string;
+  p?: string;
+  pos?: string;
+  z?: string;
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+
   /*display */
   dis?: string
   d?: string
-  "@wrap"?: string; "@rect"?: string; "@sq"?: string;  "@case"?: string;
-  "@stack"?: string; "@vstack"?: string; "@hstack"?: string;
+  float?: string;
+  clear?: string;
+  overf?: string;
+  overflow?: string;
+
+  //text
   font?: string
+  fonts?: string
+  fontf?: string
+  fontw?: string
   color?: string
+  c?: string
+  text?: string
+  t?: string
+  textd?: string
+  textt?: string
+  line?:string
+  letter?:string
+  word?:string
+
+
+  //background
   bg?: string,
+  bgc?: string,
+  bgi?: string,
+  bgr?: string,
+  bgp?: string,
+  bgs?: string,
+  
+  pd?:string
+  pdt?:string
+  pdb?:string
+  pdr?: string
+  pdl?: string
+  
+  mg?:string
+  mgt?:string
+  mgb?:string
+  mgr?: string
+  mgl?: string
+  
+  //flex
+  jus?: string
+  justify?: string
+  jusi?: string
+  flexd?: string,
+  flexw?: string,
+  flexf?: string,
+  align?: string
+
+    //effects
+  cur?:string
+  op?: string
+  boxs?:string
+  bs?:string
+  rt?:string
+  sc?: string
+  scale?:string
+  filter?:string
+  trsl?:string
+  trans?:string
+  ani?:string
+  outl?: string
+  out?: string
+  space?: string
+  
+   //border
+  bd?: string
+  bdw?: string
+  bds?: string
+  bdc?: string
+  bdr?: string
+
+   //grid
+  gtc?: string
+  gtr?: string
+  gta?: string
+  gap?: string
+
+  /*responsive */
   sm?: TOBJECT;
   md?: TOBJECT;
   lg?: TOBJECT;
-  center?: string
-  jus?: string
-  flex?: string,
+  "@hover"?: TOBJECT;
+  //shorthand with @keyword
+  "@wrap"?: string; "@rect"?: string; "@sq"?: string;  "@case"?: string;
+  "@stack"?: string; "@vstack"?: string; "@hstack"?: string;
 }
 
 export interface TObject {
@@ -164,7 +201,6 @@ const tClassName = (node: TerseNode) => {
   return `${tag}_${r2}${r1}${r5}${r4}${r6}${r3}${r5}${r6}`;
 };
 
-
 const createVars = (str: TerseVar[] | undefined) => {
   //console.log(str)
   let text = ""
@@ -190,7 +226,7 @@ export const defaultTheme: TerseTheme = {
   title: "mystyle",
   color: {
     primary: "#000",
-    secondary: "#f5f5f5"
+    secondary: "#1800dd"
   },
   breakpoints: {
     sm: "max-width:375px",
@@ -199,7 +235,7 @@ export const defaultTheme: TerseTheme = {
   },
   root: `font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;`,
   vars: [],
-  fontFamily: "system-ui"
+  font: "system-ui"
 }
 
 /**@function resTheme TerseCSS theme resolver function. */
@@ -217,7 +253,7 @@ export function resTheme(theme: TerseTheme) {
     breakpoints: { ...defaultTheme.breakpoints, ...tBk },
     root,
     vars: theme?.vars === undefined ? defaultTheme.vars : theme.vars,
-    fontFamily: theme?.fontFamily === undefined ? defaultTheme.fontFamily : theme.fontFamily,
+    font: theme?.font === undefined ? defaultTheme.font : theme.font,
     transition: theme?.transition === undefined ? defaultTheme.transition === undefined ? ".1s all ease-in" : "" : theme.transition
   }
 
@@ -285,12 +321,12 @@ const shOneLinerOption = (str: string[]) => {
     case "@sq":
       return `w-${option} h-${option}`;
     case "@vstack":
-      return `w-${option} h-${more} flex flexd-column justify-${stackOpt}`;
+      return `w-${option} h-${more} d-flex flexd-column justify-${stackOpt}`;
     case "@hstack":
       return `w-${option} h-${more} flex flexd-row justify-${stackOpt}`;
-    case "center":
+    case "@center":
       return `center flexd-${option}`;
-    case "case":
+    case "@case":
       return `textt-${textCap(option)}`;
     case "cap":
       return "textt-capitalize";
@@ -305,12 +341,10 @@ const shOneLinerOption = (str: string[]) => {
 };
 
 //ADD ONs
-function scope(style: TOBJECT) {
-
+function machine(style: TOBJECT) {
   if (typeof style !== "object") {
     return style
   } else {
-
     const keys = Object.keys(style)
     const values = Object.values(style)
 
@@ -322,9 +356,28 @@ function scope(style: TOBJECT) {
       const value = values[index]
 
       if (checkFirst(command)) {
-        arr.push(`${command}:${value}`)
+        
+        if (command === "@hover" || command === "@focus") {
+          const val = () => {
+              let t = ""
+            machine(value).split(" ").forEach(v => {
+              const com = command.split("@")[1]
+                t += `${com}:${v} `
+              })
+
+              return t
+          }
+
+          const cls = val()
+          arr.push(cls)
+
+        }else {
+          const cls = `${command}:${value}`
+          arr.push(cls)
+        }
+      
       } else if (checkMedia(command)) {
-        const resclass = scope(value)
+        const resclass = machine(value)
         const val = () => {
           let t = ""
           resclass.split(" ").forEach(v => {
@@ -356,5 +409,5 @@ export const tUtils = {
   one: shOneLiner,
   oneOpt: shOneLinerOption,
   th: resTheme,
-  scope
+  machine
 };

@@ -4,7 +4,7 @@ import style from "./style.css"
 
 function App() {
   return (
-    <div className={style.wrap}>
+    <div className={style.stack}>
       <Hi />
     </div>
   )

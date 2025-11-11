@@ -16,7 +16,7 @@ export interface TerseTheme {
   },
   root?: string,
   vars?: TerseVar[],
-  fontFamily?: string,
+  font?: string,
   transition?: string
 }
 
@@ -40,8 +40,8 @@ class TerseCSS {
     return shStyleElement.sheet;
   }
 
-  #ASTERICKS() {
-    const fontFamily = this.theme.fontFamily
+  #ASTERICKS(withimport:boolean = false) {
+    const fontFamily = this.theme.font
     const transition = this.theme.transition
     return `*{margin:0;padding:0;font-family:${fontFamily};transition:${transition};}`
   }
@@ -262,7 +262,7 @@ class TerseCSS {
 
     const tokens = this.#lexer(elements?.classes);
     const ast: TerseAst[] = this.#ast(tokens);
-
+    
     //console.log(tokens)
     //console.log(ast)
     //generating clasname for each nodes
@@ -333,6 +333,7 @@ class TerseCSS {
 
     //theme
     this.theme = theme as TerseTheme
+    console.log(this.theme)
 
     nodelists.flatMap((el) => {
       //console.log(el.classes)
@@ -343,46 +344,9 @@ class TerseCSS {
     });
   }
 
-  //entry point
-  /**@method init TerseCSS Entry Point. @param theme provide a custom Tersetheme or use the default  @description make sure to call this function. */
-  startReact(theme?: TerseTheme) {
-    //nodelist
-
-  function getNodeList() {
-    const allElements = document.querySelectorAll("*");
-    const classLists: TerseNode[] = [];
-
-    allElements.forEach((element, id) => {
-      if (element.getAttribute("id") === "root" || element.getAttribute("id") === "app") {
-        console.log(element)
-        const allEls = element.querySelectorAll("*")
-        allEls.forEach(e => console.log(e))
-
-        /*
-        classLists.push({
-          tag: element.tagName?.toLocaleLowerCase(),
-          classes: Array.from(element.classList).join(" "),
-          element,
-          id,
-        }); */
-      }
-    });
-
-    return classLists;
-  }
-    const nodelists = getNodeList();
-    console.log(nodelists)
-
-    //theme
+  applyTheme(theme:TerseTheme) {
     this.theme = theme as TerseTheme
-
-    nodelists.flatMap((el) => {
-      //console.log(el.classes)
-      const classes = this.#runtime(el, theme);
-      if (el.element) {
-        el.element.classList.add(classes);
-      }
-    });
+    this.styles[1] = this.#ASTERICKS()
   }
 
   scopeStyle(nodes: TerseNode[]) {
@@ -395,7 +359,6 @@ class TerseCSS {
       }
     });
 
-    //console.log(scopeNodes)
     return scopeNodes
   }
 }
@@ -404,27 +367,19 @@ class TerseCSS {
 //ADD ONS FOR TERSECSS ON REACT LIKE AND CLASSNAME GENERATION
 /**@function useStyleMachine(style) */
 export function useStyleMachine(style: TOBJECT) {
-  //console.log(style)
+  const nodes: TerseNode[] = []
   const keys = Object.keys(style)
   const values = Object.values(style)
-  
-  const nodes: TerseNode[] = []
 
   keys.forEach((tag, id) => {
-    //const path = location.pathname === "/" ? "" : location.pathname.split("/")[1]
-    //const exTag = path === "" ? tag : `${path}_${tag}`
     const obj = values[id]
-
-    const classes = tUtils.scope(obj as TOBJECT)
+    const classes = tUtils.machine(obj as TOBJECT)
     const node: TerseNode = { id, tag, classes }
     nodes.push(node)
   })
 
   const cls = terseCSS.scopeStyle(nodes)
-  //console.log(terseCSS)
-
   const obj: Record<string, string> = {}
-
   cls.forEach(({ tag, cls }) => {
     if (tag) {
       obj[tag] = `${cls}`
@@ -433,16 +388,21 @@ export function useStyleMachine(style: TOBJECT) {
   return obj
 }
 
-export function tStyleMachine(style: TObject) {
-  return useStyleMachine(style)
-}
-
 //TYPE-SAFETY Hooks
 /**@function createTheme(theme) TerseCSS custom theme creator */
 export const createTheme = (customTheme: TerseTheme) => tUtils.th(customTheme);
 
-/**@function tObject(style) TerseCSS utility object creator */
-export const tStyle = (style: TOBJECT) => style;
+/**@function tStyle(style) TerseCSS utility object creator */
+export const tStyle = (style: TOBJECT | string) => {
+  if (typeof style === "string") {
+    return style as string
+  } else {
+    return style as TOBJECT
+  }
+}
+
+/**@function tStyleMachine(style) TerseCSS custom theme creator */
+export const tStyleMachine = (style: TObject) => useStyleMachine(style)
 
 //main
 /**@instance of TerseCSS */
