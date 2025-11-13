@@ -1,11 +1,10 @@
 
-import Wrap from "./assets/hi"
-//import { tStyle } from "../../src/index"
+import Wrap from "./assets/wrap"
 import style from "./style.css"
 
 function App() {
   return (
-    <div className={style.stack}>
+    <div className={style.wrapper}>
       <Wrap />
     </div>
   )

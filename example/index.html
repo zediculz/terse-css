@@ -1,24 +1,13 @@
 <!doctype html>
 <html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
+  <head>
+    <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/img.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TerseCSS -Zero runtime CSS utility-classes and utility-object</title>
-</head>
-
-<body>
-  <div id="app" class="@vstack:100%:100dvh center">
-    <h1 class="c-#fff bg-#1800dd pd-12px bdr-6px font-10pt">TerseCSS</h1>
-    <div class="@sq:50% center:column jus-space:evenly text-center">
-      <img class="w-156px h-auto bdr-12px hover:w-165px cur" src="/img.png" alt="tersecss-logo"/>
-      <h2 class="case:cap font-18pt sm:font-13pt">use CSS utility <b>classes</b> and <b>objects</b> with the power of <b class="case:cap c-var(primary)">Finite-State Machine</b></h2>
-      <p class="font-10pt case:low sm:font-8pt">Use utility Classes and Utility Objects to Write locally scoped classes, variables and themes, and generate <b class="case:cap c-var(primary)">CSSDOM</b> at build time, all while leceraging on the power of finite-state machine.. </p>
-      <span class="pd-8px bdr-8px font-12pt fontw-bold bdc-red cur">npm i tersecss</span>
-    </div>
-  </div>
-  <script type="module" src="/src/main.ts"></script>
-</body>
-
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

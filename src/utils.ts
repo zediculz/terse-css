@@ -241,9 +241,9 @@ const shOneLinerOption = (str: string[]) => {
 
 //SCOPE ADD ON FOR *.CSS.TS USAGE
 //turns each TOBJECT into terseCSS shorthand code
-function machine(style: TOBJECT) {
-  console.log(style)
-    const keys = Object.keys(style)
+function machine(style: TOBJECT): string {
+  if (typeof style === "object") {
+     const keys = Object.keys(style)
     const values = Object.values(style)
 
     const arr: string[] = []
@@ -258,7 +258,8 @@ function machine(style: TOBJECT) {
         if (command === "@hover" || command === "@focus") {
           const val = () => {
               let t = ""
-            machine(value).split(" ").forEach(v => {
+            const machineResult = machine(value)
+            machineResult.split(" ").forEach(v => {
               const com = command.split("@")[1]
                 t += `${com}:${v} `
               })
@@ -297,6 +298,9 @@ function machine(style: TOBJECT) {
 
   const classes = arr.join(" ")
     return classes
+  } else {
+    return style
+  }
 }
 
 //get nodelist of the entire Document
@@ -304,8 +308,7 @@ function getNodeList() {
     const allElements = document.querySelectorAll("*");
     const classLists: TerseNode[] = [];
 
-
-    allElements.forEach((element, id) => {
+  allElements.forEach((element, id) => {
       if (element.classList && element.classList.length > 0) {
         classLists.push({
           tag: element.tagName?.toLocaleLowerCase(),
@@ -314,7 +317,7 @@ function getNodeList() {
           id,
         });
       }
-    });
+  });
 
     return classLists;
   }
