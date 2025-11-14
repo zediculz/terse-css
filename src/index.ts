@@ -3,7 +3,7 @@
 
 import TerseCore from "./core";
 import { util } from "./utils";
-import type { TerseVar, TObject, TOBJ, TOBJECT  } from "./utils";
+import type { TerseVar, TObject, TOBJ  } from "./utils";
 
 export interface TerseTheme {
     title?: string,
@@ -30,26 +30,54 @@ const terse = new TerseCore();
 export const createVars = (vars:TerseVar|TerseVar[]) => {
   const arr = vars instanceof Array ? vars : [vars]
   const varResult = util.createVars(arr)
-  console.log(varResult)
+  //console.log(varResult)
+  return varResult
 }
 
-export const style = (style:Partial<CSSStyleDeclaration>|TOBJ) => {
-  const shs = terse.AST(style)
-  return shs
-}
 
-export const globalStyle = (style:Partial<CSSStyleDeclaration>|TOBJ, ...bases:string[]) => {
+export const style = (style:Partial<CSSStyleDeclaration>|TOBJ, bases?:Partial<CSSStyleDeclaration>[]|TOBJ[]) => {
   const cls = terse.AST(style)
-
-  if (bases.length === 0) {
+  if (bases) {
+    if (bases.length === 0) {
     return cls
   } else {
-    const base = bases.join(" ")
-    const s = `${cls} ${base}`
-    console.log(s)
-    return s
+    
+    let obj = {}
+    bases.map(base => {
+      Object.assign(obj, base)
+    })
+    
+    const merged = Object.assign(style, obj)
+    const cls = terse.AST(merged)
+    return cls
+  }
+  } else {
+    return cls
   }
 }
+
+export const globalStyle = (style:Partial<CSSStyleDeclaration>|TOBJ, bases?:Partial<CSSStyleDeclaration>[]|TOBJ[]) => {
+  const cls = terse.AST(style)
+  if (bases) {
+    if (bases.length === 0) {
+    return cls
+  } else {
+    
+    let obj = {}
+    bases.map(base => {
+      Object.assign(obj, base)
+    })
+    
+    const merged = Object.assign(style, obj)
+    const cls = terse.AST(merged)
+    return cls
+  }
+  } else {
+    return cls
+  }
+}
+
+export const mixin = (style:Partial<CSSStyleDeclaration>|TOBJ) => style as Partial<CSSStyleDeclaration>
 
 
 //terseObjet
@@ -62,5 +90,3 @@ export const terseCSS =  {
     return terse.create(style)
   }
 }
-
-console.log(terse)

@@ -207,23 +207,7 @@ export interface TOBJ {
     /**@description "@hover" a shorthand to create a hover effect. @example "@hover":{TOBJECT}. */
   ":hover"?: Partial<CSSStyleDeclaration>;
   ":focus"?: Partial<CSSStyleDeclaration>;
-
-    //shorthand with @keyword
-    /**@description "@wrap" wrap width:height without unit, wrap uses percentage fpr width and dvh for height. */
-    "@wrap"?: string;
-
-    /**@description "@rect" a shorthand to create a rectangle layout. @example "@rect":width:height == "@rect": 100px:100px. */
-    "@rect"?: string;
-    /**@description "@sq" a shorthand to create a square layout. @example "@sq":size == "@sq": 100px. */
-    "@sq"?: string;
-
-    /**@description "@case" a shorthand for text-transform. @example "@case":"cap", "@case":"low", "@case":"up". */
-    "@case"?: string;
-
-    /**@description "@vstack" a shorthand to create flex with column direction. @example "@vstack":width:height:space == "@vstack": 100px:100px:space:evenly. */
-    "@vstack"?: string;
-    /**@description "@hstack" a shorthand to create flex with row direction. @example "@hstack":width:height:space == "@hstack": 100px:100px:space:evenly. */
-    "@hstack"?: string
+  ":child"?: Partial<CSSStyleDeclaration>;
 }
 
 

@@ -3,7 +3,7 @@ import {
   terseCSS,
   createVars,
   style,
-  globalStyle
+  mixin
 } from "../../src/index"
 
 
@@ -41,21 +41,44 @@ export const container = style({
 createVars([{name: "newcolor", value: "purple"}])
 
 const wrap = style({
-  width: "60%",
-  height: "50%",
-  background: "green",
+  width: "50%",
+  height: "60%",
   cursor: "pointer",
   marginTop: "6rem",
   display: "flex",
   flexDirection: "column",
 })
 
-const st = style({
-  width: "100%",
-  height: "40%",
+const flex = mixin({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  flexDirection: "column"
 })
 
 
+const st = style({
+  width: "100%",
+  height: "56%"
+}, [flex])
+
+const img = style({
+  width: "145px",
+  height: "145px",
+  cursor: "pointer",
+  ":hover": {
+    width: "156px"
+  }
+})
+
+const stack = style({
+  height: "44%",
+  background: "violet",
+  textAlign: "center",
+  ':child': {}
+},[flex])
+
+
 //entry point
-const mystyle = terseCSS.create({wrap, st })
+const mystyle = terseCSS.create({wrap, st, stack, img })
 export default mystyle
