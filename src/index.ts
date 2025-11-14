@@ -1,53 +1,66 @@
+
 ///<reference lib="dom" />
 
-import { tUtils } from "./utils";
-import type { TerseVar, TObject } from "./utils";
-import type { TOBJECT } from "./tobj";
-import TerseCSS, { TerseTheme } from "./core";
+import TerseCore from "./core";
+import { util } from "./utils";
+import type { TerseVar, TObject, TOBJ, TOBJECT  } from "./utils";
 
+export interface TerseTheme {
+    title?: string,
+    color?: {
+        primary?: string,
+        secondary?: string
+    }
+    breakpoints?: {
+        sm?: string,
+        md?: string
+        lg?: string
+    },
+    root?: string,
+    vars?: TerseVar[],
+    font?: string,
+    fontUrl?: string
+    transition?: string
+}
 
-///////////////////////////////////////////////////////////////////
-//HOOKS FOR *css.ts files
-//ADD ONS FOR TERSECSS ON REACT LIKE AND CLASSNAME GENERATION
+//Core init
+const terse = new TerseCore();
 
-//Scoped Runtime hook
-/**@function tStyleMachine(style) create scope CSS in *.css.ts file for your App. */
-export const tStyleMachine = (style: TObject) => terseCSS.scopeRuntimeCore(style)
+////Terse hooks
+export const createVars = (vars:TerseVar|TerseVar[]) => {
+  const arr = vars instanceof Array ? vars : [vars]
+  const varResult = util.createVars(arr)
+  console.log(varResult)
+}
 
-/**@function tStyle(style) TerseCSS utility object creator */
-export const tStyle = (style: TOBJECT, ...bases: string[] | TOBJECT[]) => {
-  const shs = tUtils.machine(style)
+export const style = (style:Partial<CSSStyleDeclaration>|TOBJ) => {
+  const shs = terse.AST(style)
+  return shs
+}
+
+export const globalStyle = (style:Partial<CSSStyleDeclaration>|TOBJ, ...bases:string[]) => {
+  const cls = terse.AST(style)
+
   if (bases.length === 0) {
-    return shs
+    return cls
   } else {
     const base = bases.join(" ")
-    const s = `${shs} ${base}`
+    const s = `${cls} ${base}`
+    console.log(s)
     return s
   }
 }
 
-/**@function tStyle(style) TerseCSS utility object creator */
-export const tInlineStyle = (style: string) => style
 
-export const createVars = (vars:TerseVar|TerseVar[]) => {
-  const arr = vars instanceof Array ? vars : [vars]
-  const varResult = tUtils.createVars(arr)
-  console.log(varResult)
+//terseObjet
+export const terseCSS =  {
+  createTheme(theme:TerseTheme) {
+    return terse.createTheme(theme)
+  },
+
+  create(style:TObject) {
+    return terse.create(style)
+  }
 }
 
-
-///////////////////////////////////////////////////////////////
-//RUNTIME FOR GLOBAL AND UTILITY CLASSES
-//TYPE-SAFETY HOOKS FOR TERSE CLASS
-/**@function createTheme(theme) TerseCSS custom theme creator */
-export const createTheme = (customTheme: TerseTheme) => tUtils.th(customTheme);
-
-/**@function applyTheme(theme) TerseCSS theme applied */
-export const applyTheme = (theme?: TerseTheme) => terseCSS.applyTheme(theme);
-
-//main
-/**@instance of TerseCSS */
-//runtime
-export const terseCSS = new TerseCSS();
-//USE GLOBALCSS TO CREATE A GLOBAL CSSDOM STYLED WITH UTULITY CLASS 
-//USE SCOPED CSS TO CREATE SCOPED CSSDOM WITH UTILITY OBJECTS
+console.log(terse)

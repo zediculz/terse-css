@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  applyTheme,
-  createTheme,
   terseCSS,
-  tStyle,
-  tStyleMachine,
+  createVars,
+  style,
+  globalStyle
 } from "../../src/index"
 
 
 //PROVIDE YOUR CUSTOM THEME
-const myThemes = createTheme({
+terseCSS.createTheme({
+  title: "dhuri",
   color: {
     primary: "purple",
     secondary: "red"
@@ -22,20 +22,40 @@ const myThemes = createTheme({
     { name: "primary", value: "#0000ff" },
     { name: "bo", value: "rebeccapurple" },
   ],
-  transition: ".20s all ease-in"
+  transition: ".2s all ease-in",
+  font: "roboto",
+  fontUrl: 'https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap'
 })
 
-
-applyTheme(myThemes)
-
-const wrapper = tStyle({
+//uses utility object to
+export const container = style({
   width: "100%",
-  h: "100dvh",
-  bg: "red",
-  color: "green"
+  height: "100dvh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "flex-start"
 })
 
-const style = tStyleMachine({wrapper})
-export default style
 
-console.log(terseCSS) 
+//create variables
+createVars([{name: "newcolor", value: "purple"}])
+
+const wrap = style({
+  width: "60%",
+  height: "50%",
+  background: "green",
+  cursor: "pointer",
+  marginTop: "6rem",
+  display: "flex",
+  flexDirection: "column",
+})
+
+const st = style({
+  width: "100%",
+  height: "40%",
+})
+
+
+//entry point
+const mystyle = terseCSS.create({wrap, st })
+export default mystyle

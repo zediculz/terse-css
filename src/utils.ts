@@ -1,6 +1,232 @@
 import type { TerseTheme } from "./index"
-import tShs from "./shs";
-import { TOBJECT } from "./tobj";
+
+/**@default defaultTheme TerseCSS default theme. */
+export const defaultTheme: TerseTheme = {
+  title: "mystyle",
+  color: {
+    primary: "#000",
+    secondary: "#1800dd"
+  },
+  breakpoints: {
+    sm: "max-width:375px",
+    md: "max-width:768px",
+    lg: "min-width:1245px"
+  },
+  root: `font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;`,
+  vars: [],
+  font: "system-ui"
+}
+
+export interface TOBJECT {
+
+    /**@description w width shorthand */
+    w?: string;
+    width?: string
+    /**@description h height shorthand */
+    h?: string;
+    height?: string;
+    
+  /**@description maxw max-width */
+    maxw?: string;
+    maxWidth?: string
+  /**@description maxw max-width, maxh max-height */
+    maxh?: string;
+    maxHeight?: string
+
+    /**@description minh min-width */
+    minw?: string;
+    minWidth?: string
+
+    /**@description minw min-height */
+    minh?: string;
+    minHeight?: string
+    
+    /**@description p postion */
+    p?: string;
+    /**@description p postion */
+    pos?: string;
+    postion?: string
+    /**@description z z-index */
+    z?: string;
+    
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+
+    /*display */
+    /**@description dis display */
+    dis?: string
+    /**@description d display */
+  d?: string
+    display?: string
+    
+  float?: string;
+clear?: string;
+/**@example overf overflow */
+  overf?: string;
+  overflow?: string;
+
+  //text
+  font?: string
+  fonts?: string
+  fontf?: string
+    fontw?: string
+    
+    /**@description c color */
+    c?: string
+    color?: string
+
+  text?: string
+  t?: string
+  textd?: string
+  textt?: string
+  line?:string
+  letter?:string
+  word?:string
+
+
+  //background
+  /**@description bg background */
+  bg?: string,
+  /**@description bgc backgroundColor */
+  bgc?: string,
+  /**@description bgi backgroundImage */
+    bgi?: string,
+    
+  bgr?: string,
+  bgp?: string,
+  bgs?: string,
+  
+ /**@description pd padding */
+    pd?: string
+ /**@description pdt padding-top */
+    pdt?: string
+ /**@description pdb padding-bottom */
+    pdb?: string
+ /**@description pdr padding-right */
+    pdr?: string
+ /**@description pdl padding-left */
+    pdl?: string
+    
+  /**@description mg margin */
+    mg?: string
+ /**@description mg margin-top */
+    mgt?: string
+ /**@description mg margin-bottom */
+    mgb?: string
+ /**@description mg margin-right*/
+    mgr?: string
+ /**@description mg margin-left*/
+  mgl?: string
+  
+  //flex
+  jus?: string
+  justify?: string
+  jusi?: string
+  flexd?: string,
+  flexw?: string,
+  flexf?: string,
+  align?: string
+
+  //effects
+  cur?:string
+  op?: string
+  boxs?:string
+  bs?:string
+  rt?:string
+  sc?: string
+  scale?:string
+  filter?:string
+  trsl?:string
+  trans?:string
+  ani?:string
+  outl?: string
+  out?: string
+  space?: string
+  
+    //border
+    /**@description bd border. */
+    bd?: string
+    /**@description bdw border-width. */
+    bdw?: string
+    /**@description bds border-style. */
+    bds?: string
+    
+    bdc?: string
+    /**@description bdc border-radius. */
+  bdr?: string
+
+   //grid
+  gtc?: string
+  gtr?: string
+  gta?: string
+  gap?: string
+
+    /*responsive */
+    /**@description responsiveness command sm mean small screen. */
+    sm?: TOBJECT;
+    /**@description responsiveness command sm mean middle screen. */
+    md?: TOBJECT;
+    /**@description responsiveness command sm mean large screen. */
+  lg?: TOBJECT;
+
+    //extend ffects
+    /**@description "@hover" a shorthand to create a hover effect. @example "@hover":{TOBJECT}. */
+  "@hover"?: TOBJECT;
+
+    //shorthand with @keyword
+    /**@description "@wrap" wrap width:height without unit, wrap uses percentage fpr width and dvh for height. */
+    "@wrap"?: string;
+
+    /**@description "@rect" a shorthand to create a rectangle layout. @example "@rect":width:height == "@rect": 100px:100px. */
+    "@rect"?: string;
+    /**@description "@sq" a shorthand to create a square layout. @example "@sq":size == "@sq": 100px. */
+    "@sq"?: string;
+
+    /**@description "@case" a shorthand for text-transform. @example "@case":"cap", "@case":"low", "@case":"up". */
+    "@case"?: string;
+
+    /**@description "@vstack" a shorthand to create flex with column direction. @example "@vstack":width:height:space == "@vstack": 100px:100px:space:evenly. */
+    "@vstack"?: string;
+    /**@description "@hstack" a shorthand to create flex with row direction. @example "@hstack":width:height:space == "@hstack": 100px:100px:space:evenly. */
+    "@hstack"?: string
+}
+
+export interface TOBJ {
+  
+    /*responsive */
+    /**@description responsiveness command sm mean small screen. */
+    sm?: Partial<CSSStyleDeclaration>|TOBJ;
+    /**@description responsiveness command sm mean middle screen. */
+    md?: Partial<CSSStyleDeclaration>|TOBJ;
+    /**@description responsiveness command sm mean large screen. */
+    lg?: Partial<CSSStyleDeclaration>|TOBJ;
+
+    //extend ffects
+    /**@description "@hover" a shorthand to create a hover effect. @example "@hover":{TOBJECT}. */
+  ":hover"?: Partial<CSSStyleDeclaration>;
+  ":focus"?: Partial<CSSStyleDeclaration>;
+
+    //shorthand with @keyword
+    /**@description "@wrap" wrap width:height without unit, wrap uses percentage fpr width and dvh for height. */
+    "@wrap"?: string;
+
+    /**@description "@rect" a shorthand to create a rectangle layout. @example "@rect":width:height == "@rect": 100px:100px. */
+    "@rect"?: string;
+    /**@description "@sq" a shorthand to create a square layout. @example "@sq":size == "@sq": 100px. */
+    "@sq"?: string;
+
+    /**@description "@case" a shorthand for text-transform. @example "@case":"cap", "@case":"low", "@case":"up". */
+    "@case"?: string;
+
+    /**@description "@vstack" a shorthand to create flex with column direction. @example "@vstack":width:height:space == "@vstack": 100px:100px:space:evenly. */
+    "@vstack"?: string;
+    /**@description "@hstack" a shorthand to create flex with row direction. @example "@hstack":width:height:space == "@hstack": 100px:100px:space:evenly. */
+    "@hstack"?: string
+}
+
+
 
 export interface TerseToken {
   command: string;
@@ -23,16 +249,127 @@ export interface TerseAst {
 export interface TerseVar { name: string, value: string }
 export interface TerseNode { tag?: string, classes: string, element?: Element, id?: number }
 
-  
-
 export interface TObject {
-  [key: string]: TOBJECT | TerseTheme | string
+  [key: string]: Partial<CSSStyleDeclaration> | TOBJ | TerseTheme | string[]
+}
+
+
+function spliceCommand(command: string) {
+  let text = ""
+  command.split("").flatMap((name) => {
+    if (name === String(name).toUpperCase() && name !== ":") {
+      text += `-${name.toLowerCase()}`
+    } else {
+      text += name
+    }
+  })
+
+  return text
+}
+
+function spliceEffect(command: string) {
+  const text = command.split(":")
+  return text[1]
+}
+
+function spObj(value: any) {
+  let text = ''
+  const keys = Object.keys(value)
+  const values = Object.values(value)
+
+  keys.flatMap((command, id) => {
+    const value = values[id]
+    const res = `${command}:${value};`
+    text += res
+  })
+
+  return text
+}
+
+function spMobj(value: any, media: string, cls: string) {
+  let mediaGlobal = ""
+  let mediaEffect = ""
+
+  const keys = Object.keys(value)
+  const values = Object.values(value)
+
+  keys.flatMap((key, id) => {
+    const command = spliceCommand(key)
+    const value = values[id]
+
+    if (command[0] === ":") {
+      const effect = spliceEffect(command)
+      const val = spObj(value)
+      const res = `&:${effect}{${val}}`
+      mediaEffect += res
+
+    } else {
+      //Media GLOBAL
+      const res = `${command}:${value};`
+      mediaGlobal += res
+    }
+  })
+
+  //console.log(mediaGlobal)
+  //console.log(mediaEffect)
+  //@media screen {.cls {color: pink; &:hover {color: violet}}}
+  const res = `${media}{.${cls}{${mediaGlobal}${mediaEffect}}}`
+  return res
+}
+
+
+
+/**@function resTheme TerseCSS theme resolver function. */
+const createVars = (str: TerseVar[] | undefined) => {
+  //console.log(str)
+  let text = ""
+
+  if (str !== undefined) {
+    if (str.length === 0) {
+      return ""
+    } else {
+      str.flatMap(s => {
+        text += `--${s.name}:${s.value};`
+      })
+
+      return text
+    }
+  }
+
+  return text
+}
+
+function ROOT(theme:TerseTheme) {
+  const rootVars = theme.vars !== undefined ? createVars(theme?.vars) : ""
+  const root = theme?.root === undefined ? `:root{${defaultTheme.root}${rootVars}}` : `:root{${theme.root}${rootVars}}`
+  return root
+}
+
+export function resTheme(theme: TerseTheme) {
+
+  const root = ROOT(theme)
+
+  const tColor = theme?.color === undefined ? {} : theme?.color
+  const tBk = theme?.breakpoints === undefined ? {} : theme?.breakpoints
+ 
+  const newTheme: TerseTheme = {
+    title: theme?.title === undefined ? defaultTheme.title : theme.title,
+    color: { ...defaultTheme.color, ...tColor },
+    breakpoints: { ...defaultTheme.breakpoints, ...tBk },
+    root,
+    vars: theme?.vars === undefined ? defaultTheme.vars : theme.vars,
+    font: theme?.font === undefined ? defaultTheme.font : theme.font,
+    fontUrl: theme?.fontUrl === undefined ? defaultTheme.fontUrl : theme.fontUrl,
+    transition: theme?.transition === undefined ? defaultTheme.transition === undefined ? ".1s all ease-in" : "" : theme.transition
+  }
+
+  return newTheme
 }
 
 /**@function tMedia responsive media query */
-const tMedia = (media: string, theme?: TerseTheme) => {
-
-  const bk = theme?.breakpoints
+const media = (media: string, theme?: TerseTheme) => {
+  const th = theme === undefined ? defaultTheme : theme
+  const bk = th?.breakpoints
 
   switch (media) {
     case "sm":
@@ -53,285 +390,7 @@ const tMedia = (media: string, theme?: TerseTheme) => {
   }
 };
 
-/**@function tClassName TerseCSS classname generator function. */
-const tClassName = (node: TerseNode) => {
-  const alpha = [
-    "a",
-    "b",
-    "c",
-    "d",
-    "e",
-    "f",
-    "g",
-    "h",
-    "i",
-    "j",
-    "k",
-    "l",
-    "m",
-    "n",
-    "o",
-    "p",
-    "q",
-    "r",
-    "s",
-    "t",
-    "u",
-    "v",
-    "w",
-    "x",
-    "y",
-    "z"
-  ];
 
-  const tag = node.tag
-  const r1 = alpha[Math.floor(Math.random() * 25)];
-  const r2 = alpha[Math.floor(Math.random() * 25)];
-  const r3 = alpha[Math.floor(Math.random() * 25)];
-  const r4 = alpha[Math.floor(Math.random() * 25)];
-  const r5 = alpha[Math.floor(Math.random() * 20)];
-  const r6 = alpha[Math.floor(Math.random() * 15)];
-
-  return `${tag}_${r2}${r1}${r5}${r4}${r6}${r3}${r5}${r6}`;
-};
-
-const createVars = (str: TerseVar[] | undefined) => {
-  //console.log(str)
-  let text = ""
-
-  if (str !== undefined) {
-    if (str.length === 0) {
-      return ""
-    } else {
-      str.flatMap(s => {
-        text += `--${s.name}:${s.value};`
-      })
-
-      return text
-    }
-  }
-
-  return text
+export const util = {
+  spMobj, spObj, spliceCommand, spliceEffect, resTheme, media, createVars
 }
-
-
-/**@default defaultTheme TerseCSS default theme. */
-export const defaultTheme: TerseTheme = {
-  title: "mystyle",
-  color: {
-    primary: "#000",
-    secondary: "#1800dd"
-  },
-  breakpoints: {
-    sm: "max-width:375px",
-    md: "max-width:768px",
-    lg: "min-width:1245px"
-  },
-  root: `font-synthesis:none;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;`,
-  vars: [],
-  font: "system-ui"
-}
-
-/**@function resTheme TerseCSS theme resolver function. */
-export function resTheme(theme: TerseTheme) {
-
-  const root = ROOT(theme)
-
-  const tColor = theme?.color === undefined ? {} : theme?.color
-  const tBk = theme?.breakpoints === undefined ? {} : theme?.breakpoints
- 
-  const newTheme: TerseTheme = {
-    title: theme?.title === undefined ? defaultTheme.title : theme.title,
-    color: { ...defaultTheme.color, ...tColor },
-    breakpoints: { ...defaultTheme.breakpoints, ...tBk },
-    root,
-    vars: theme?.vars === undefined ? defaultTheme.vars : theme.vars,
-    font: theme?.font === undefined ? defaultTheme.font : theme.font,
-    transition: theme?.transition === undefined ? defaultTheme.transition === undefined ? ".1s all ease-in" : "" : theme.transition
-  }
-
-  return newTheme
-}
-
-function ROOT(theme:TerseTheme) {
-  const rootVars = theme.vars !== undefined ? createVars(theme?.vars) : ""
-  const root = theme?.root === undefined ? `:root{${defaultTheme.root}${rootVars}}` : `:root{${theme.root}${rootVars}}`
-  return root
-}
-
-/**@function shOneLiner TerseCSS one-line shorthand utiltiy function. */
-const shOneLiner = (command: string) => {
-  switch (command) {
-    case "center":
-      return "d-flex align-center justify-center";
-    case "cur":
-      return "cur-pointer";
-    case "container":
-      return "w-100% h-100dvh d-flex";
-    case "flex":
-      return "d-flex align-center justify-start";
-    case "btn":
-      return "w-200px h-50px out-none bdr-8px center font-14pt bd-none out-none cur-pointer";
-    case "primarybtn":
-      return "btn bg-red";
-    default:
-      return "";
-  }
-};
-
-/**@function shOneLiner TerseCSS one-line shorthand utiltiy function. */
-const shOneLinerOption = (str: string[]) => {
-
-  const command = str[0]
-  const option = str[1]
-  const more = str[2] !== undefined ? str[2] : ""
-
-  //stacks
-  const stackFunc = (str: string) => {
-    if (str === "around" || str === "evenly") {
-      return `space:${str}`
-    } else {
-      return str
-    }
-  }
-  const stackOpt = str[3] !== undefined ? stackFunc(str[3]) : "space:evenly"
-
-  const textCap = (option: string) => {
-    switch (option) {
-      case "up":
-        return "uppercase"
-      case "low":
-        return "lowercase"
-      case "cap":
-        return "capitalize"
-
-      default:
-        break;
-    }
-  }
-
-  switch (command) {
-    case "@wrap":
-      return `w-${option}% h-${option}dvh`;
-    case "@layout":
-      return `w-${option}% h-${option}dvh`;
-    case "@rect":
-      return `w-${option} h-${more}`;
-    case "@sq":
-      return `w-${option} h-${option}`;
-    case "@vstack":
-      return `w-${option} h-${more} d-flex flexd-column justify-${stackOpt}`;
-    case "@hstack":
-      return `w-${option} h-${more} flex flexd-row justify-${stackOpt}`;
-    case "@center":
-      return `center flexd-${option}`;
-    case "@case":
-      return `textt-${textCap(option)}`;
-    case "cap":
-      return "textt-capitalize";
-    case "upcase":
-      return "textt-uppercase";
-    case "b":
-      //console.log(str)
-      return "";
-    default:
-      return "";
-  }
-};
-
-//SCOPE ADD ON FOR *.CSS.TS USAGE
-//turns each TOBJECT into terseCSS shorthand code
-function machine(style: TOBJECT): string {
-  if (typeof style === "object") {
-     const keys = Object.keys(style)
-    const values = Object.values(style)
-
-    const arr: string[] = []
-    const checkMedia = (c: string) => c === "sm" || c == "md" || c === "lg"
-    const checkFirst = (c: string) => c.split("")[0] === "@"
-
-  keys.forEach((command, index) => {
-      const value = values[index]
-
-      if (checkFirst(command)) {
-        
-        if (command === "@hover" || command === "@focus") {
-          const val = () => {
-              let t = ""
-            const machineResult = machine(value)
-            machineResult.split(" ").forEach(v => {
-              const com = command.split("@")[1]
-                t += `${com}:${v} `
-              })
-
-              return t
-          }
-
-          const cls = val()
-          arr.push(cls)
-
-        } else {
-          const cls = `${command}:${value}`
-          arr.push(cls)
-        }
-      
-      } else if (checkMedia(command)) {
-        const resclass = machine(value)
-        const val = () => {
-          let t = ""
-          resclass.split(" ").forEach(v => {
-            t += `${command}:${v} `
-          })
-
-          return t
-        }
-
-        const cls = val()
-        arr.push(cls)
-      } else {
-        const cls = `${command}-${value}`
-        arr.push(cls)
-      }
-
-    })
-
-
-  const classes = arr.join(" ")
-    return classes
-  } else {
-    return style
-  }
-}
-
-//get nodelist of the entire Document
-function getNodeList() {
-    const allElements = document.querySelectorAll("*");
-    const classLists: TerseNode[] = [];
-
-  allElements.forEach((element, id) => {
-      if (element.classList && element.classList.length > 0) {
-        classLists.push({
-          tag: element.tagName?.toLocaleLowerCase(),
-          classes: Array.from(element.classList).join(" "),
-          element,
-          id,
-        });
-      }
-  });
-
-    return classLists;
-  }
-
-/**@method tUtils TerseCSS Utils functions. */
-export const tUtils = {
-  com: tShs,
-  media: tMedia,
-  classname: tClassName,
-  one: shOneLiner,
-  oneOpt: shOneLinerOption,
-  th: resTheme,
-  machine,
-  createVars,
-  root: ROOT,
-  getNodeList
-};

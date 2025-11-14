@@ -1,10 +1,11 @@
 
 import Wrap from "./assets/wrap"
-import style from "./style.css"
+import {container} from "./style.css"
 
 function App() {
+
   return (
-    <div className={style.wrapper}>
+    <div className={container}>
       <Wrap />
     </div>
   )
