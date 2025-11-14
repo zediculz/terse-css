@@ -58,12 +58,12 @@ const flex = mixin({
 
 const st = style({
   width: "100%",
-  height: "56%"
+  height: "50%"
 }, [flex])
 
 const img = style({
   width: "145px",
-  height: "145px",
+  height: "auto",
   cursor: "pointer",
   ":hover": {
     width: "156px"
@@ -71,12 +71,56 @@ const img = style({
 })
 
 const stack = style({
-  height: "44%",
-  background: "violet",
+  width: "100%",
+  height: "50%",
   textAlign: "center",
+  justifyContent: "space-eenly",
 },[flex])
 
+const h = style({
+    fontSize: "21pt",
+    color: "blue",
+  width: "70%",
+    padding: "12px"
+})
+
+const p = style({
+    width: "90%",
+    fontSize: "8pt"
+})
+
+const div = style({
+  width: "90%",
+  height: "60px",
+  fontSize: "8pt",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  marginTop: "1rem"
+})
+
+const btn = style({
+  width: "165px",
+  height: "44px",
+  fontSize: "12pt",
+  background: "#0000ff",
+  color: "#fff",
+  outline: "none",
+  cursor: "pointer",
+  borderRadius: "8px",
+  border: "none",
+})
+
+
+const span = style({
+    width: "100px",
+  fontSize: "10pt",
+  padding: "1rem",
+  ":hover": {
+      color: "#0000ff"
+    }
+})
 
 //entry point
-const mystyle = terseCSS.create({wrap, st, stack, img })
+const mystyle = terseCSS.create({wrap, st, stack, img, h, p, div, btn, span })
 export default mystyle

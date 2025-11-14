@@ -135,12 +135,12 @@ class TerseCore {
       this.styles.push(mediaRule);
     });
 
-    this.runTime()
+    this.#runTime()
     this.classlist.push(cls)
     return cls
   }
 
-  runTime() {
+  #runTime() {
     //console.log(styles)
     this.styles.forEach((rule, id) => {
       this.sheet?.insertRule(rule, id);

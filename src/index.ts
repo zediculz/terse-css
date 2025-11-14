@@ -88,7 +88,9 @@ export const terseCSS =  {
 
   create(style:TObject) {
     return terse.create(style)
-  }
+  },
+
+  globalVars() {}
 }
 
-//console.log(terse)
+console.log(terse)
