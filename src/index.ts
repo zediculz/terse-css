@@ -90,3 +90,5 @@ export const terseCSS =  {
     return terse.create(style)
   }
 }
+
+//console.log(terse)

@@ -36,7 +36,6 @@ export const container = style({
   alignItems: "flex-start"
 })
 
-
 //create variables
 createVars([{name: "newcolor", value: "purple"}])
 
@@ -75,7 +74,6 @@ const stack = style({
   height: "44%",
   background: "violet",
   textAlign: "center",
-  ':child': {}
 },[flex])
 
 

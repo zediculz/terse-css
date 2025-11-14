@@ -207,7 +207,6 @@ export interface TOBJ {
     /**@description "@hover" a shorthand to create a hover effect. @example "@hover":{TOBJECT}. */
   ":hover"?: Partial<CSSStyleDeclaration>;
   ":focus"?: Partial<CSSStyleDeclaration>;
-  ":child"?: Partial<CSSStyleDeclaration>;
 }
 
 
