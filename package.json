@@ -17,7 +17,7 @@
   ],
   "author": "Ademujimi oluwaseyi zediculz",
   "license": "MIT",
-  "description": "tersecss is a lightweight css utility-classes framework",
+  "description": "tersecss is a lightweight css-in-ts framework",
   "devDependencies": {
     "esbuild": "^0.25.11",
     "typescript": "^5.9.3",
