@@ -56,6 +56,7 @@ export const style = (style:Partial<CSSStyleDeclaration>|TOBJ, bases?:Partial<CS
   }
 }
 
+
 export const globalStyle = (style:Partial<CSSStyleDeclaration>|TOBJ, bases?:Partial<CSSStyleDeclaration>[]|TOBJ[]) => {
   const cls = terse.AST(style)
   if (bases) {

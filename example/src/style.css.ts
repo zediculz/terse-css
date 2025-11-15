@@ -1,9 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
+  //main top level functions
   terseCSS,
+
+  //hooks
   createVars,
   style,
-  mixin
+  mixin,
 } from "../../src/index"
 
 
@@ -55,7 +58,6 @@ const flex = mixin({
   flexDirection: "column"
 })
 
-
 const st = style({
   width: "100%",
   height: "50%"
@@ -74,14 +76,25 @@ const stack = style({
   width: "100%",
   height: "50%",
   textAlign: "center",
-  justifyContent: "space-eenly",
 },[flex])
 
 const h = style({
-    fontSize: "21pt",
-    color: "blue",
+  fontSize: "21pt",
+  color: "blue",
   width: "70%",
-    padding: "12px"
+  padding: "12px",
+
+  md: {
+    width: "100%",
+    fontSize: "18pt",
+    color: "pink"
+  },
+  sm: {
+    width: "100%",
+    fontSize: "16pt",
+    color: "purple",
+     background: "red"
+  }
 })
 
 const p = style({
@@ -99,7 +112,7 @@ const div = style({
   marginTop: "1rem"
 })
 
-const btn = style({
+export const btn = style({
   width: "165px",
   height: "44px",
   fontSize: "12pt",
@@ -110,7 +123,6 @@ const btn = style({
   borderRadius: "8px",
   border: "none",
 })
-
 
 const span = style({
     width: "100px",
