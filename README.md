@@ -14,21 +14,42 @@
 npm i tersecss
 ```
 
-### Basic Class Example
+### Usage
+Create a *.css.ts file (eg style.css.ts) and export style to use
 ```javascript
+import {
+  //main top level functions
+  terseCSS,
 
-//import terseCSS and call init() for TerseCSS to start working
-import { terseCSS } from "../terse/index"
-terseCSS.init()
-//import the main class and call init() for TerseCSS to start working
-import TerseCSS from 'tersecss'
-const t = new TerseCSS()
-t.init()
+ //hook
+  style,
+} from "tersecss"
+
+const wrap = style({
+  width: "50%",
+  height: "60%",
+  cursor: "pointer",
+  marginTop: "6rem",
+  display: "flex",
+  flexDirection: "column",
+})
 
 //use TerseCSS like this
 function HelloWorld() => {
     return(
-        <div class="w-100px h-100dvh sm:w-10px">
+        <div className={wrap}>
+            <h1>Hello World</h1>
+        </div>
+    )
+}
+
+//Or use main level function 
+const mystyle = terseCSS.create({ wrap })
+
+//use TerseCSS like this
+function HelloWorld() => {
+    return(
+        <div className={mystyle.wrap}>
             <h1>Hello World</h1>
         </div>
     )
